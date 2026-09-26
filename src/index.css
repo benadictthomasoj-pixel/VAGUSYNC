@@ -86,3 +86,16 @@ canvas {
   touch-action: none;
 }
 
+@keyframes waveform {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-waveform {
+  animation: waveform 4s linear infinite;
+}
+
