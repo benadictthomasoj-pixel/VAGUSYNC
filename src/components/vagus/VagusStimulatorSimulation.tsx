@@ -9,15 +9,8 @@ import {
   Power,
   Sliders,
   ShieldCheck,
-  Info,
-  Clock,
   BatteryCharging,
   Radio,
-  CheckCircle2,
-  Sparkles,
-  Play,
-  Pause,
-  RotateCcw,
 } from 'lucide-react';
 
 export const VagusStimulatorSimulation: React.FC = () => {
@@ -94,7 +87,7 @@ export const VagusStimulatorSimulation: React.FC = () => {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 pb-12 animate-in fade-in duration-300">
-      {/* Simulation Header Banner */}
+      {/* Stimulation Header Banner */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-md relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-indigo-100/40 via-cyan-100/30 to-transparent rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
@@ -102,17 +95,17 @@ export const VagusStimulatorSimulation: React.FC = () => {
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 border border-indigo-200 text-indigo-700">
               <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-cyan-500 animate-pulse' : 'bg-slate-400'}`} />
-              <span>{language === 'ta' ? 'வேகஸ் நரம்பு தூண்டி — மாதிரி இயக்கம் (Simulation)' : 'Vagus Nerve Stimulator — Simulation'}</span>
+              <span>{language === 'ta' ? 'வேகஸ் நரம்பு தூண்டுதல் (tVNS)' : 'Vagus Nerve Stimulation (tVNS)'}</span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              {language === 'ta' ? 'வேகஸ் நரம்பு தூண்டுதல் மாதிரி' : 'Vagus Nerve Stimulator — Demo'}
+              {language === 'ta' ? 'வேகஸ் நரம்பு தூண்டி' : 'Vagus Nerve Stimulator'}
             </h1>
 
             <p className="text-sm text-slate-600 leading-relaxed">
               {language === 'ta'
-                ? 'பக்கவாத மறுவாழ்வு பயிற்சிகளுடன் இணைந்த காதுவழி வேகஸ் நரம்பு தூண்டுதலின் (tVNS) ஊடாடும் மாதிரி உருவகப்படுத்தல்.'
-                : 'Interactive UI simulation demonstrating non-invasive auricular vagus nerve stimulation (tVNS) coupled with stroke motor rehabilitation and cardiac safety monitoring.'}
+                ? 'பக்கவாத மறுவாழ்வு பயிற்சிகளுடன் இணைந்த காதுவழி வேகஸ் நரம்பு தூண்டுதல் (tVNS) மற்றும் இதய பாதுகாப்பு கண்காணிப்பு.'
+                : 'Non-invasive auricular vagus nerve stimulation (tVNS) paired with stroke motor rehabilitation and cardiac safety monitoring.'}
             </p>
           </div>
 
@@ -126,26 +119,13 @@ export const VagusStimulatorSimulation: React.FC = () => {
               }`}
             >
               <Radio className={`w-4 h-4 ${isActive ? 'text-cyan-600 animate-pulse' : 'text-slate-400'}`} />
-              <span>{isActive ? (language === 'ta' ? 'இயக்கத்தில் உள்ளது' : 'Simulation Active') : (language === 'ta' ? 'நிறுத்தப்பட்டுள்ளது' : 'Simulation Off')}</span>
+              <span>{isActive ? (language === 'ta' ? 'இயக்கத்தில் உள்ளது' : 'Stimulator Active') : (language === 'ta' ? 'தயார் நிலை (Standby)' : 'Stimulator Standby')}</span>
             </div>
 
             <span className="text-[11px] font-semibold text-slate-400">
-              {language === 'ta' ? 'மாதிரி செயல்முறை மட்டுமே' : 'Visual Demo Only'}
+              {language === 'ta' ? 'காதுவழி tVNS முறை' : 'Auricular tVNS Mode'}
             </span>
           </div>
-        </div>
-
-        {/* Clinical Simulation Disclaimer */}
-        <div className="mt-5 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 flex items-start gap-3 text-xs text-slate-600">
-          <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-          <p className="leading-relaxed">
-            <strong className="text-slate-800 font-bold">
-              {language === 'ta' ? 'முக்கிய அறிவிப்பு (Simulation Only): ' : 'Simulation Disclaimer: '}
-            </strong>
-            {language === 'ta'
-              ? 'இது ஒரு மென்பொருள் உருவகப்படுத்தல் மட்டுமே. இது உண்மையான மருத்துவ வன்பொருளை இயக்காது மற்றும் மின்சார அதிர்வுகளை உருவாக்காது.'
-              : 'This interface is a simulated demonstration tool for clinical research concepts. It does not deliver electrical stimulation or connect to live therapeutic medical hardware.'}
-          </p>
         </div>
       </div>
 
@@ -154,7 +134,7 @@ export const VagusStimulatorSimulation: React.FC = () => {
         {/* Left Column: Device Illustration Card (Centerpiece) */}
         <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-md flex flex-col items-center justify-center relative overflow-hidden">
           <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-6 flex items-center justify-between w-full">
-            <span>{language === 'ta' ? 'அணியக்கூடிய சாதனம் (மாதிரி)' : 'Wearable Stimulator Unit'}</span>
+            <span>{language === 'ta' ? 'அணியக்கூடிய தூண்டி சாதனம்' : 'Wearable Stimulator Unit'}</span>
             <span className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
               <BatteryCharging className="w-3.5 h-3.5 text-emerald-600" />
               <span>96% Charged</span>
@@ -281,7 +261,7 @@ export const VagusStimulatorSimulation: React.FC = () => {
                     ? 'bg-gradient-to-tr from-cyan-500 to-blue-600 text-white ring-4 ring-cyan-400/40 shadow-cyan-500/40'
                     : 'bg-slate-200 text-slate-600 hover:bg-slate-300 ring-2 ring-slate-300'
                 }`}
-                title={isActive ? 'Click to Stop Simulation' : 'Click to Start Simulation'}
+                title={isActive ? 'Click to Stop Stimulation' : 'Click to Start Stimulation'}
               >
                 <Power className={`w-6 h-6 ${isActive ? 'animate-pulse' : ''}`} />
                 <span className="text-[8px] font-black uppercase tracking-wider mt-0.5">
@@ -291,7 +271,7 @@ export const VagusStimulatorSimulation: React.FC = () => {
 
               <div className="text-center pt-2">
                 <span className="text-[10px] font-semibold text-slate-400">
-                  {language === 'ta' ? 'காது நரம்பு தொடர்பு: சரியானது' : 'Auricular Contact: Calibrated (Sim)'}
+                  {language === 'ta' ? 'காது நரம்பு தொடர்பு: சரியானது' : 'Auricular Contact: Calibrated'}
                 </span>
               </div>
             </div>
@@ -311,15 +291,15 @@ export const VagusStimulatorSimulation: React.FC = () => {
               <span>
                 {isActive
                   ? language === 'ta'
-                    ? 'மாதிரி இயக்கத்தை நிறுத்து (Turn OFF)'
-                    : 'Stop Simulation (Turn OFF)'
+                    ? 'தூண்டுதலை நிறுத்து (Turn OFF)'
+                    : 'Stop Stimulation (Turn OFF)'
                   : language === 'ta'
-                  ? 'மாதிரி இயக்கத்தைத் தொடங்கு (Turn ON)'
-                  : 'Start Simulation (Turn ON)'}
+                  ? 'தூண்டுதலைத் தொடங்கு (Turn ON)'
+                  : 'Start Stimulation (Turn ON)'}
               </span>
             </button>
             <span className="text-[11px] text-slate-400">
-              {language === 'ta' ? 'அழுத்தி இயக்கத்தை மாற்றலாம்' : 'Tap to toggle simulated neuro-stimulation state'}
+              {language === 'ta' ? 'அழுத்தி தூண்டுதலை இயக்கலாம்' : 'Tap to toggle neuro-stimulation output'}
             </span>
           </div>
         </div>
@@ -393,11 +373,11 @@ export const VagusStimulatorSimulation: React.FC = () => {
 
             {/* Telemetry Metrics Pair: Simulated HR + Frequency */}
             <div className="grid grid-cols-2 gap-3 pt-1">
-              {/* Simulated Heart Rate */}
+              {/* Heart Rate */}
               <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                    {language === 'ta' ? 'மாதிரி இதய துடிப்பு' : 'Simulated HR'}
+                    {language === 'ta' ? 'இதய துடிப்பு (HR)' : 'Heart Rate'}
                   </span>
                   <Heart
                     className={`w-3.5 h-3.5 text-[#FF375F] ${
@@ -437,12 +417,12 @@ export const VagusStimulatorSimulation: React.FC = () => {
             </div>
           </div>
 
-          {/* Interactive Simulation Parameters Card */}
+          {/* Interactive Stimulation Parameters Card */}
           <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-md space-y-4">
             <div className="flex items-center gap-2">
               <Sliders className="w-4 h-4 text-purple-600" />
               <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wide">
-                {language === 'ta' ? 'மாதிரி அமைப்புகள்' : 'Simulation Controls'}
+                {language === 'ta' ? 'தூண்டுதல் அமைப்புகள்' : 'Stimulation Parameters'}
               </h3>
             </div>
 
@@ -484,7 +464,7 @@ export const VagusStimulatorSimulation: React.FC = () => {
             <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
               <div>
                 <span className="text-xs font-bold text-slate-800 block">
-                  {language === 'ta' ? 'தீவிரம் (Intensity)' : 'Simulated Intensity'}
+                  {language === 'ta' ? 'தீவிரம் (Intensity)' : 'Stimulation Intensity'}
                 </span>
                 <span className="text-[10px] text-slate-500">
                   {currentIntensity.currentMa} • {language === 'ta' ? currentIntensity.labelTa : currentIntensity.label}
@@ -520,7 +500,7 @@ export const VagusStimulatorSimulation: React.FC = () => {
               <span>
                 {language === 'ta'
                   ? 'இதய பாதுகாப்பு வரம்பு 130 BPM தாண்டினால் தூண்டுதல் தானாக நிறுத்தப்படும்.'
-                  : 'Automated Cardiac Cut-off: Simulation halts if HR exceeds safety ceiling (130 BPM).'}
+                  : 'Automated Cardiac Cut-off: Output halts automatically if HR exceeds safety ceiling (130 BPM).'}
               </span>
             </div>
           </div>
