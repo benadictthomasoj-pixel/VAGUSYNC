@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHandTracking } from '../../context/HandTrackingContext';
+import { useRehab } from '../../context/RehabContext';
+import { getTranslation } from '../../utils/i18n';
 import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
 
@@ -27,6 +29,8 @@ export const TargetTouchGame: React.FC<TargetTouchGameProps> = ({
   onExertionTick,
 }) => {
   const { handState } = useHandTracking();
+  const { language } = useRehab();
+  const t = getTranslation(language);
   const [isPaused, setIsPaused] = useState(false);
 
   const [reps, setReps] = useState(0);
@@ -34,7 +38,9 @@ export const TargetTouchGame: React.FC<TargetTouchGameProps> = ({
   const [currentStep, setCurrentStep] = useState(1);
   const [targets, setTargets] = useState<TargetItem[]>([]);
   const [startTime, setStartTime] = useState<number>(Date.now());
-  const [feedbackMsg, setFeedbackMsg] = useState<string>('Move index finger to Target 1');
+  const [feedbackMsg, setFeedbackMsg] = useState<string>(
+    language === 'ta' ? 'இலக்கு 1 ஐத் தொடுங்கள்' : 'Move index finger to Target 1'
+  );
   const [lastMetrics, setLastMetrics] = useState<{
     accuracy: number;
     completionTime: string;
@@ -73,7 +79,9 @@ export const TargetTouchGame: React.FC<TargetTouchGameProps> = ({
     setTargets(newTargets);
     setCurrentStep(1);
     setStartTime(Date.now());
-    setFeedbackMsg('Touch Target 1 with index finger');
+    setFeedbackMsg(
+      language === 'ta' ? 'இலக்கு 1 ஐத் தொடுங்கள்' : 'Touch Target 1 with index finger'
+    );
   };
 
   useEffect(() => {
@@ -114,7 +122,11 @@ export const TargetTouchGame: React.FC<TargetTouchGameProps> = ({
     setScore((prev) => prev + points);
 
     if (nextStep <= 5) {
-      setFeedbackMsg(`Great reach! Now touch Target ${nextStep}`);
+      setFeedbackMsg(
+        language === 'ta'
+          ? `அருமை! அடுத்து இலக்கு ${nextStep} ஐத் தொடுங்கள்`
+          : `Great reach! Now touch Target ${nextStep}`
+      );
       setStartTime(Date.now());
     } else {
       // Sequence completed! Compute kinematic performance metrics

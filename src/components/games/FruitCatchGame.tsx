@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useHandTracking } from '../../context/HandTrackingContext';
 import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
+import { useRehab } from '../../context/RehabContext';
 
 interface FruitCatchGameProps {
   difficulty: number;
@@ -42,6 +43,7 @@ export const FruitCatchGame: React.FC<FruitCatchGameProps> = ({
   onExertionTick,
 }) => {
   const { handState } = useHandTracking();
+  const { language } = useRehab();
   const [isPaused, setIsPaused] = useState(false);
 
   const [basketX, setBasketX] = useState(0.5);
@@ -171,7 +173,7 @@ export const FruitCatchGame: React.FC<FruitCatchGameProps> = ({
     <CameraGameContainer
       isPaused={isPaused}
       onTrackingStateChange={(detected) => setIsPaused(!detected)}
-      gameTitle="Fruit Catch"
+      gameTitle={language === 'ta' ? 'பழங்கள் பிடித்தல்' : 'Fruit Catch'}
     >
       <div className="relative w-full h-full pointer-events-none">
         {/* Falling Fruits rendered over live camera */}
@@ -217,16 +219,18 @@ export const FruitCatchGame: React.FC<FruitCatchGameProps> = ({
           }}
           className="h-12 rounded-2xl bg-gradient-to-r from-emerald-500/90 via-teal-400/90 to-emerald-500/90 border-2 border-white shadow-xl shadow-emerald-500/50 flex items-center justify-center text-slate-950 font-extrabold text-xs tracking-wider uppercase select-none transition-all duration-75 z-20 backdrop-blur-xs"
         >
-          <span>🖐 Hand Catcher</span>
+          <span>🖐 {language === 'ta' ? 'பிடி கூடை' : 'Hand Catcher'}</span>
         </div>
 
         {/* Bottom HUD */}
         <div className="absolute bottom-3.5 left-6 right-6 flex items-center justify-between text-xs text-slate-200 pointer-events-none z-30">
           <span className="bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-700/80 text-emerald-300">
-            Sweep your real hand horizontally beneath falling fruits
+            {language === 'ta'
+              ? 'விழும் பழங்களைப் பிடிக்க உங்கள் கையை கிடைமட்டமாக நகர்த்துங்கள்'
+              : 'Sweep your real hand horizontally beneath falling fruits'}
           </span>
           <span className="font-mono bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-700/80 text-white font-bold">
-            Caught: {reps} / {targetReps}
+            {language === 'ta' ? 'பிடித்தவை:' : 'Caught:'} {reps} / {targetReps}
           </span>
         </div>
       </div>

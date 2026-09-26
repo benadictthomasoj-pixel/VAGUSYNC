@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useRehab } from '../../context/RehabContext';
 import { useHandTracking } from '../../context/HandTrackingContext';
 import { GAMES_CATALOG } from '../../data/games';
-import { getTranslation } from '../../utils/i18n';
+import { getTranslation, translations } from '../../utils/i18n';
 import { soundManager } from '../../utils/audio';
 import { BalloonPopGame } from '../games/BalloonPopGame';
 import { TargetTouchGame } from '../games/TargetTouchGame';
@@ -126,7 +126,7 @@ export const SessionRunner: React.FC<SessionRunnerProps> = ({
       setIsPausedForSafety(true);
       setSafetyEventsCount((c) => c + 1);
       soundManager.playSafetyAlarm();
-      soundManager.speak(t.sessionPausedDesc, language, voiceGuidance);
+      soundManager.speak(translations.en.sessionPausedDesc, 'en', voiceGuidance);
     }
     if (safetyState === 'WARNING' && liveDifficulty > 1) {
       // Auto throttle difficulty
@@ -180,12 +180,17 @@ export const SessionRunner: React.FC<SessionRunnerProps> = ({
     setMovementQuality(finalStats.movementQuality);
     setStage('rpe_check');
     soundManager.playSessionComplete();
+    const spokenComplete =
+      (translations.en.gameSpoken as any)?.[gameDef.id]?.complete ||
+      (translations.en.gameSpoken as any)?.complete ||
+      'Exercise complete!';
+    soundManager.speak(spokenComplete, 'en', voiceGuidance);
   };
 
   const handleRpeSelect = (val: number) => {
     setRpe(val);
     setStage('grip_challenge');
-    soundManager.speak(t.gripChallengeTitle, language, voiceGuidance);
+    soundManager.speak(translations.en.gripChallengeTitle, 'en', voiceGuidance);
   };
 
   // Grip Task Press-and-Hold
@@ -431,11 +436,14 @@ export const SessionRunner: React.FC<SessionRunnerProps> = ({
           <button
             onClick={() => {
               setStage('active_game');
-              soundManager.speak(`Starting ${gameDef.name}. Maintain comfortable reach.`, language, voiceGuidance);
+              const spokenStart =
+                (translations.en.gameSpoken as any)?.[gameDef.id]?.start ||
+                `Starting ${gameDef.name}. Maintain comfortable reach.`;
+              soundManager.speak(spokenStart, 'en', voiceGuidance);
             }}
             className="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-base transition-all shadow-lg shadow-blue-500/25 cursor-pointer"
           >
-            Start Exercise Set
+            {t.startExerciseSet || (language === 'ta' ? 'பயிற்சியைத் தொடங்கு' : 'Start Exercise Set')}
           </button>
         </div>
       )}

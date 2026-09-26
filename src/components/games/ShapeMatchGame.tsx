@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHandTracking } from '../../context/HandTrackingContext';
+import { useRehab } from '../../context/RehabContext';
+import { getTranslation } from '../../utils/i18n';
 import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
 import { Circle, Square, Triangle, Star, Hexagon, CheckCircle2 } from 'lucide-react';
@@ -39,6 +41,8 @@ export const ShapeMatchGame: React.FC<ShapeMatchGameProps> = ({
   onExertionTick,
 }) => {
   const { handState } = useHandTracking();
+  const { language } = useRehab();
+  const t = getTranslation(language);
   const [isPaused, setIsPaused] = useState(false);
 
   const [reps, setReps] = useState(0);
@@ -239,7 +243,9 @@ export const ShapeMatchGame: React.FC<ShapeMatchGameProps> = ({
 
         {/* Bottom guidance */}
         <div className="absolute bottom-3.5 left-6 text-xs text-slate-300 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-700/80 pointer-events-none z-30">
-          Pinch thumb and index finger to pick up shape, move to right slot, then release
+          {language === 'ta'
+            ? 'வடிவத்தை விரல்களால் பிடித்து, வலதுபுற இடத்திற்கு நகர்த்தி பொருத்தவும்'
+            : 'Pinch thumb and index finger to pick up shape, move to right slot, then release'}
         </div>
       </div>
     </CameraGameContainer>

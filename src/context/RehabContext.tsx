@@ -16,6 +16,7 @@ import {
   INITIAL_ALERTS,
 } from '../data/seedData';
 import { soundManager } from '../utils/audio';
+import { getTranslation, translations } from '../utils/i18n';
 import { hardwareConnection } from '../hardware/HardwareConnection';
 
 export interface DeviceHardwareStatus {
@@ -284,22 +285,24 @@ export const RehabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const triggerCompensation = (type: CompensationEvent['type'] = 'Trunk Lean') => {
-    const corrections: Record<string, string> = {
-      'Trunk Lean': 'Keep your trunk upright. Avoid leaning forward during reach.',
-      'Shoulder Hike': 'Relax your upper trapezius. Avoid hiking the shoulder.',
-      'Elbow Flare': 'Keep your elbow aligned with the target plane.',
-      'Speed Fluctuation': 'Maintain a smooth, continuous reach velocity.',
-    };
+    const t = getTranslation(language);
+    const localizedMsg =
+      t.compensationAlerts?.[type as keyof typeof t.compensationAlerts] ||
+      (language === 'ta' ? 'உடலை நேராக வைக்கவும்.' : 'Maintain posture alignment.');
+
+    const englishSpokenMsg =
+      translations.en.compensationAlerts?.[type as keyof typeof translations.en.compensationAlerts] ||
+      'Maintain posture alignment.';
 
     const event: CompensationEvent = {
       type,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-      correctionMsg: corrections[type] || 'Maintain posture alignment.',
+      correctionMsg: localizedMsg,
     };
 
     setActiveCompensation(event);
     soundManager.playWarning();
-    soundManager.speak(event.correctionMsg, language, voiceGuidance);
+    soundManager.speak(englishSpokenMsg, 'en', voiceGuidance);
 
     // Auto-clear after 4.5 seconds
     setTimeout(() => {

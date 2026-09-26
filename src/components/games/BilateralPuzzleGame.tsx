@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHandTracking } from '../../context/HandTrackingContext';
+import { useRehab } from '../../context/RehabContext';
+import { getTranslation } from '../../utils/i18n';
 import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
 
@@ -19,6 +21,8 @@ export const BilateralPuzzleGame: React.FC<BilateralPuzzleGameProps> = ({
   onExertionTick,
 }) => {
   const { handState } = useHandTracking();
+  const { language } = useRehab();
+  const t = getTranslation(language);
   const [isPaused, setIsPaused] = useState(false);
 
   const [reps, setReps] = useState(0);
@@ -178,7 +182,9 @@ export const BilateralPuzzleGame: React.FC<BilateralPuzzleGameProps> = ({
           className="pointer-events-none z-30 transition-all duration-75"
         >
           <div className="w-14 h-14 rounded-full border-2 border-sky-400 bg-sky-500/30 backdrop-blur-xs flex items-center justify-center shadow-xl shadow-sky-500/50">
-            <span className="text-[10px] font-bold text-sky-200 uppercase">L-Hand</span>
+            <span className="text-[10px] font-bold text-sky-200 uppercase">
+              {language === 'ta' ? 'இடது' : 'L-Hand'}
+            </span>
           </div>
         </div>
 
@@ -193,7 +199,9 @@ export const BilateralPuzzleGame: React.FC<BilateralPuzzleGameProps> = ({
           className="pointer-events-none z-30 transition-all duration-75"
         >
           <div className="w-14 h-14 rounded-full border-2 border-purple-400 bg-purple-500/30 backdrop-blur-xs flex items-center justify-center shadow-xl shadow-purple-500/50">
-            <span className="text-[10px] font-bold text-purple-200 uppercase">R-Hand</span>
+            <span className="text-[10px] font-bold text-purple-200 uppercase">
+              {language === 'ta' ? 'வலது' : 'R-Hand'}
+            </span>
           </div>
         </div>
 
@@ -203,13 +211,17 @@ export const BilateralPuzzleGame: React.FC<BilateralPuzzleGameProps> = ({
             <div className="w-16 h-16 rounded-full border-4 border-emerald-400 border-t-transparent animate-spin mx-auto flex items-center justify-center">
               <span className="font-mono text-xs font-bold text-white">{holdProgress}%</span>
             </div>
-            <div className="text-xs font-bold text-emerald-400">HOLDING BILATERAL SYMMETRY</div>
+            <div className="text-xs font-bold text-emerald-400">
+              {language === 'ta' ? 'இரு கைகளையும் சமமாகப் பிடியுங்கள்' : 'HOLDING BILATERAL SYMMETRY'}
+            </div>
           </div>
         )}
 
         {/* Bottom guidance */}
         <div className="absolute bottom-3.5 left-6 text-xs text-slate-300 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-700/80 pointer-events-none z-30">
-          Position both left and right hand indicators onto their anchor targets simultaneously
+          {language === 'ta'
+            ? 'இரு கைகளையும் ஒரே நேரத்தில் இலக்கு வளையங்களில் வையுங்கள்'
+            : 'Position both left and right hand indicators onto their anchor targets simultaneously'}
         </div>
       </div>
     </CameraGameContainer>

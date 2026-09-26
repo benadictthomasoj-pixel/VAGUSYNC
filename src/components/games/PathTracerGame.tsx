@@ -4,6 +4,7 @@ import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
 import { Point } from '../../services/handTracking/types';
 import { CheckCircle2 } from 'lucide-react';
+import { useRehab } from '../../context/RehabContext';
 
 interface PathTracerGameProps {
   difficulty: number;
@@ -21,6 +22,7 @@ export const PathTracerGame: React.FC<PathTracerGameProps> = ({
   onExertionTick,
 }) => {
   const { handState } = useHandTracking();
+  const { language } = useRehab();
   const [isPaused, setIsPaused] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -244,7 +246,7 @@ export const PathTracerGame: React.FC<PathTracerGameProps> = ({
     <CameraGameContainer
       isPaused={isPaused}
       onTrackingStateChange={(detected) => setIsPaused(!detected)}
-      gameTitle="Path Tracer"
+      gameTitle={language === 'ta' ? 'பாதை வரைதல்' : 'Path Tracer'}
     >
       <div className="relative w-full h-full">
         <canvas
@@ -256,10 +258,10 @@ export const PathTracerGame: React.FC<PathTracerGameProps> = ({
 
         {/* Start / Goal Labels */}
         <div className="absolute bottom-12 left-10 text-xs font-extrabold text-emerald-400 bg-slate-900/80 px-2.5 py-1 rounded-md border border-emerald-500/40 pointer-events-none z-20">
-          ● START
+          ● {language === 'ta' ? 'தொடக்கப்புள்ளி' : 'START'}
         </div>
         <div className="absolute bottom-12 right-10 text-xs font-extrabold text-amber-400 bg-slate-900/80 px-2.5 py-1 rounded-md border border-amber-500/40 pointer-events-none z-20">
-          ★ GOAL
+          ★ {language === 'ta' ? 'இலக்கு' : 'GOAL'}
         </div>
 
         {/* TRACE COMPLETE SUMMARY MODAL OVERLAY */}
@@ -272,29 +274,31 @@ export const PathTracerGame: React.FC<PathTracerGameProps> = ({
 
               <div className="space-y-1">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-sky-400">
-                  Kinematic Trajectory Assessment
+                  {language === 'ta' ? 'இயக்க வரைவு மதிப்பீடு' : 'Kinematic Trajectory Assessment'}
                 </span>
-                <h3 className="text-xl font-extrabold text-white">TRACE COMPLETE</h3>
+                <h3 className="text-xl font-extrabold text-white">
+                  {language === 'ta' ? 'வரைதல் முடிந்தது' : 'TRACE COMPLETE'}
+                </h3>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-xs text-left pt-1">
                 <div className="p-2.5 rounded-xl bg-slate-800 border border-slate-700">
-                  <span className="text-slate-400 block text-[10px]">Accuracy</span>
+                  <span className="text-slate-400 block text-[10px]">{language === 'ta' ? 'துல்லியம்' : 'Accuracy'}</span>
                   <span className="font-mono font-bold text-emerald-400 text-sm">{traceCompleteModal.accuracy}%</span>
                 </div>
 
                 <div className="p-2.5 rounded-xl bg-slate-800 border border-slate-700">
-                  <span className="text-slate-400 block text-[10px]">Smoothness</span>
+                  <span className="text-slate-400 block text-[10px]">{language === 'ta' ? 'மென்மை' : 'Smoothness'}</span>
                   <span className="font-mono font-bold text-sky-400 text-sm">{traceCompleteModal.smoothness}%</span>
                 </div>
 
                 <div className="p-2.5 rounded-xl bg-slate-800 border border-slate-700">
-                  <span className="text-slate-400 block text-[10px]">Deviation</span>
+                  <span className="text-slate-400 block text-[10px]">{language === 'ta' ? 'விலகல்' : 'Deviation'}</span>
                   <span className="font-mono font-bold text-slate-200 text-sm">{traceCompleteModal.deviation} px</span>
                 </div>
 
                 <div className="p-2.5 rounded-xl bg-slate-800 border border-slate-700">
-                  <span className="text-slate-400 block text-[10px]">Time</span>
+                  <span className="text-slate-400 block text-[10px]">{language === 'ta' ? 'நேரம்' : 'Time'}</span>
                   <span className="font-mono font-bold text-slate-200 text-sm">{traceCompleteModal.time} sec</span>
                 </div>
               </div>
@@ -305,10 +309,12 @@ export const PathTracerGame: React.FC<PathTracerGameProps> = ({
         {/* Bottom HUD */}
         <div className="absolute bottom-3.5 left-6 right-6 flex items-center justify-between text-xs text-slate-200 pointer-events-none z-30">
           <span className="bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-700/80 text-sky-300">
-            Trace from START to GOAL using your real index finger
+            {language === 'ta'
+              ? 'தொடக்கப்புள்ளியிலிருந்து இலக்கு வரை விரலால் பாதையைத் தொடருங்கள்'
+              : 'Trace from START to GOAL using your real index finger'}
           </span>
           <span className="font-mono bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-700/80 text-emerald-400 font-bold">
-            Progress: {currentProgress}% | Reps: {reps} / {targetReps}
+            {language === 'ta' ? 'முன்னேற்றம்:' : 'Progress:'} {currentProgress}% | {language === 'ta' ? 'சுற்றுகள்:' : 'Reps:'} {reps} / {targetReps}
           </span>
         </div>
       </div>

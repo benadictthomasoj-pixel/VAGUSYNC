@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useHandTracking } from '../../context/HandTrackingContext';
 import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
+import { useRehab } from '../../context/RehabContext';
 
 interface BalloonPopGameProps {
   difficulty: number;
@@ -32,6 +33,7 @@ export const BalloonPopGame: React.FC<BalloonPopGameProps> = ({
   onExertionTick,
 }) => {
   const { handState } = useHandTracking();
+  const { language } = useRehab();
   const [isPaused, setIsPaused] = useState(false);
 
   const [reps, setReps] = useState(0);
@@ -164,7 +166,7 @@ export const BalloonPopGame: React.FC<BalloonPopGameProps> = ({
     <CameraGameContainer
       isPaused={isPaused}
       onTrackingStateChange={(detected) => setIsPaused(!detected)}
-      gameTitle="Balloon Pop"
+      gameTitle={language === 'ta' ? 'பலூன் வெடிப்பு' : 'Balloon Pop'}
     >
       <div className="relative w-full h-full pointer-events-none">
         {/* Real-hand Trajectory Trace History */}
@@ -207,7 +209,7 @@ export const BalloonPopGame: React.FC<BalloonPopGameProps> = ({
             <div className="w-3.5 h-3.5 rounded-full bg-white/80 absolute top-2.5 left-3.5" />
             <div className="w-2.5 h-2 rounded-xs bg-white/50 absolute -bottom-1" />
             <div className="text-[10px] font-extrabold text-white/90 drop-shadow-sm uppercase tracking-wider">
-              POP
+              {language === 'ta' ? 'வெடி' : 'POP'}
             </div>
           </div>
         ))}
@@ -229,7 +231,7 @@ export const BalloonPopGame: React.FC<BalloonPopGameProps> = ({
               style={{ borderColor: bp.color }}
             />
             <div className="text-white text-xs font-extrabold absolute -top-5 -left-4 animate-bounce bg-slate-900/90 px-2 py-0.5 rounded-md border border-emerald-400 text-emerald-300">
-              +100 POP!
+              {language === 'ta' ? '+100 அருமை!' : '+100 POP!'}
             </div>
           </div>
         ))}
@@ -237,10 +239,12 @@ export const BalloonPopGame: React.FC<BalloonPopGameProps> = ({
         {/* Bottom In-Game Guidance & Rep Counter */}
         <div className="absolute bottom-3.5 left-6 right-6 flex items-center justify-between text-xs text-slate-200 pointer-events-none z-30">
           <span className="bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-700/80">
-            Reach toward the balloon with your real hand
+            {language === 'ta'
+              ? 'உங்கள் கையை பலூனை நோக்கி நீட்டுங்கள்'
+              : 'Reach toward the balloon with your real hand'}
           </span>
           <span className="font-mono bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-700/80 text-sky-400 font-bold">
-            Reps: {reps} / {targetReps}
+            {language === 'ta' ? 'சுற்றுகள்:' : 'Reps:'} {reps} / {targetReps}
           </span>
         </div>
       </div>

@@ -42,7 +42,11 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
       const timer = setTimeout(() => {
         setMeasuringHR(false);
         soundManager.playTargetSuccess();
-        soundManager.speak('Baseline heart rate established at 72 beats per minute.', language, voiceGuidance);
+        soundManager.speak(
+          'Baseline heart rate established at 72 beats per minute.',
+          'en',
+          voiceGuidance
+        );
       }, 2200);
       return () => clearTimeout(timer);
     }

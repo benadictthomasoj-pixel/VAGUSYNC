@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHandTracking } from '../../context/HandTrackingContext';
 import { useRehabInput } from '../../input/InputContext';
+import { useRehab } from '../../context/RehabContext';
+import { getTranslation } from '../../utils/i18n';
 import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
 import { GlassWater, CheckCircle2, Sparkles, AlertTriangle } from 'lucide-react';
@@ -32,6 +34,8 @@ export const CupTransferGame: React.FC<CupTransferGameProps> = ({
 }) => {
   const { handState } = useHandTracking();
   const { inputState } = useRehabInput();
+  const { language } = useRehab();
+  const t = getTranslation(language);
 
   const [cups, setCups] = useState<TargetCup[]>([]);
   const [pitcherX, setPitcherX] = useState(0.5);
@@ -229,7 +233,7 @@ export const CupTransferGame: React.FC<CupTransferGameProps> = ({
                 style={{ bottom: `${cup.targetLevel}%` }}
               >
                 <span className="text-[9px] font-mono font-bold text-emerald-300">
-                  Target 75%
+                  {language === 'ta' ? 'இலக்கு 75%' : 'Target 75%'}
                 </span>
               </div>
 

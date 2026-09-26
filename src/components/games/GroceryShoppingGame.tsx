@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useHandTracking } from '../../context/HandTrackingContext';
 import { useRehabInput } from '../../input/InputContext';
+import { useRehab } from '../../context/RehabContext';
+import { getTranslation } from '../../utils/i18n';
 import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
 import { ShoppingCart, CheckCircle2, Receipt, Sparkles, HelpCircle } from 'lucide-react';
@@ -16,6 +18,7 @@ interface GroceryShoppingGameProps {
 interface GroceryItem {
   id: string;
   name: string;
+  nameTa: string;
   emoji: string;
   price: string;
   isRequired: boolean;
@@ -27,14 +30,14 @@ interface GroceryItem {
 }
 
 const GROCERY_CATALOG = [
-  { name: 'Fresh Milk', emoji: '🥛', price: '$2.50' },
-  { name: 'Red Apples', emoji: '🍎', price: '$1.80' },
-  { name: 'Whole Wheat Bread', emoji: '🍞', price: '$2.20' },
-  { name: 'Orange Juice', emoji: '🧃', price: '$3.00' },
-  { name: 'Swiss Cheese', emoji: '🧀', price: '$3.50' },
-  { name: 'Fresh Bananas', emoji: '🍌', price: '$1.20' },
-  { name: 'Organic Eggs', emoji: '🥚', price: '$2.80' },
-  { name: 'Crunchy Carrot', emoji: '🥕', price: '$1.10' },
+  { name: 'Fresh Milk', nameTa: 'பசும்பால்', emoji: '🥛', price: '₹25' },
+  { name: 'Red Apples', nameTa: 'ஆப்பிள்', emoji: '🍎', price: '₹30' },
+  { name: 'Whole Wheat Bread', nameTa: 'ரொட்டி', emoji: '🍞', price: '₹35' },
+  { name: 'Orange Juice', nameTa: 'ஆரஞ்சு சாறு', emoji: '🧃', price: '₹40' },
+  { name: 'Swiss Cheese', nameTa: 'பாலாடைக்கட்டி', emoji: '🧀', price: '₹50' },
+  { name: 'Fresh Bananas', nameTa: 'வாழைப்பழம்', emoji: '🍌', price: '₹20' },
+  { name: 'Organic Eggs', nameTa: 'நாட்டு முட்டை', emoji: '🥚', price: '₹45' },
+  { name: 'Crunchy Carrot', nameTa: 'கேரட்', emoji: '🥕', price: '₹15' },
 ];
 
 export const GroceryShoppingGame: React.FC<GroceryShoppingGameProps> = ({
@@ -46,6 +49,8 @@ export const GroceryShoppingGame: React.FC<GroceryShoppingGameProps> = ({
 }) => {
   const { handState } = useHandTracking();
   const { inputState } = useRehabInput();
+  const { language } = useRehab();
+  const t = getTranslation(language);
   const [shelfItems, setShelfItems] = useState<GroceryItem[]>([]);
   const [shoppingList, setShoppingList] = useState<string[]>([]);
   const [score, setScore] = useState(0);
@@ -72,6 +77,7 @@ export const GroceryShoppingGame: React.FC<GroceryShoppingGameProps> = ({
       return {
         id: `grocery-${idx}-${Date.now()}`,
         name: item.name,
+        nameTa: item.nameTa,
         emoji: item.emoji,
         price: item.price,
         isRequired: requiredItems.includes(item.name),
@@ -203,7 +209,7 @@ export const GroceryShoppingGame: React.FC<GroceryShoppingGameProps> = ({
           <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
               <ShoppingCart className="w-4 h-4 text-emerald-600" />
-              Shopping List
+              {language === 'ta' ? 'பட்டியல்' : 'Shopping List'}
             </span>
             <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
               {cartCount}/{numRequired}
@@ -213,6 +219,8 @@ export const GroceryShoppingGame: React.FC<GroceryShoppingGameProps> = ({
           <div className="space-y-1.5 text-xs text-slate-700">
             {shoppingList.map((reqName) => {
               const isFound = shelfItems.some((i) => i.name === reqName && i.collected);
+              const catItem = GROCERY_CATALOG.find((c) => c.name === reqName);
+              const displayName = language === 'ta' ? catItem?.nameTa || reqName : reqName;
               return (
                 <div
                   key={reqName}
@@ -221,9 +229,9 @@ export const GroceryShoppingGame: React.FC<GroceryShoppingGameProps> = ({
                   }`}
                 >
                   <span className="text-sm">
-                    {GROCERY_CATALOG.find((c) => c.name === reqName)?.emoji}
+                    {catItem?.emoji}
                   </span>
-                  <span className="truncate flex-1">{reqName}</span>
+                  <span className="truncate flex-1">{displayName}</span>
                   {isFound && <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />}
                 </div>
               );
@@ -242,6 +250,7 @@ export const GroceryShoppingGame: React.FC<GroceryShoppingGameProps> = ({
         {/* Shelf Items */}
         {shelfItems.map((item) => {
           if (item.collected) return null;
+          const displayName = language === 'ta' ? item.nameTa : item.name;
           return (
             <div
               key={item.id}
@@ -258,7 +267,7 @@ export const GroceryShoppingGame: React.FC<GroceryShoppingGameProps> = ({
             >
               <span className="text-3xl">{item.emoji}</span>
               <span className="text-[9px] font-bold text-slate-700 truncate max-w-[64px]">
-                {item.name}
+                {displayName}
               </span>
             </div>
           );
@@ -277,10 +286,10 @@ export const GroceryShoppingGame: React.FC<GroceryShoppingGameProps> = ({
         >
           <ShoppingCart className="w-10 h-10 text-emerald-400 mb-1 animate-pulse" />
           <span className="text-xs font-black text-white uppercase tracking-wider">
-            Shopping Cart
+            {language === 'ta' ? 'ஷாப்பிங் கூடை' : 'Shopping Cart'}
           </span>
           <span className="text-[10px] text-emerald-300 font-bold">
-            Drop Required Items Here
+            {language === 'ta' ? 'பொருளை இங்கே வைக்கவும்' : 'Drop Required Items Here'}
           </span>
         </div>
 
@@ -289,16 +298,24 @@ export const GroceryShoppingGame: React.FC<GroceryShoppingGameProps> = ({
           <div className="absolute inset-0 flex items-center justify-center z-50 bg-slate-950/50 backdrop-blur-xs animate-in zoom-in-95">
             <div className="bg-white text-slate-900 p-6 rounded-3xl shadow-2xl border border-slate-200 max-w-xs w-full text-center space-y-3">
               <Receipt className="w-10 h-10 text-emerald-600 mx-auto" />
-              <h3 className="text-lg font-black text-slate-900 uppercase">Shopping Receipt</h3>
+              <h3 className="text-lg font-black text-slate-900 uppercase">
+                {language === 'ta' ? 'ரசீது விவரம்' : 'Shopping Receipt'}
+              </h3>
               <div className="border-t border-b border-dashed border-slate-300 py-2 space-y-1 text-xs text-left">
-                {shoppingList.map((name) => (
-                  <div key={name} className="flex justify-between font-mono">
-                    <span>{name}</span>
-                    <span className="font-bold">✓ READY</span>
-                  </div>
-                ))}
+                {shoppingList.map((name) => {
+                  const catItem = GROCERY_CATALOG.find((c) => c.name === name);
+                  const displayName = language === 'ta' ? catItem?.nameTa || name : name;
+                  return (
+                    <div key={name} className="flex justify-between font-mono">
+                      <span>{displayName}</span>
+                      <span className="font-bold">✓ READY</span>
+                    </div>
+                  );
+                })}
               </div>
-              <div className="text-xs font-bold text-emerald-600">+100 Points Complete!</div>
+              <div className="text-xs font-bold text-emerald-600">
+                {language === 'ta' ? '+100 மதிப்பெண்கள்!' : '+100 Points Complete!'}
+              </div>
             </div>
           </div>
         )}

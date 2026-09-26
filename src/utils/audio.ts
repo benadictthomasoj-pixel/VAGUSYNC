@@ -25,16 +25,12 @@ class SoundManager {
 
     this.voicesLoaded = true;
 
-    // Prefer high-clarity natural human voices
+    // Prefer high-clarity natural human English voices
     this.selectedVoice =
       voices.find((v) => v.name.includes('Google US English') || v.name.includes('Natural') || v.name.includes('Samantha') || v.name.includes('Karen') || v.name.includes('Victoria')) ||
       voices.find((v) => v.lang === 'en-US' || v.lang === 'en_US') ||
       voices.find((v) => v.lang.startsWith('en')) ||
       voices[0];
-
-    this.selectedTamilVoice =
-      voices.find((v) => v.lang.includes('ta') || v.name.toLowerCase().includes('tamil')) ||
-      null;
   }
 
   private initCtx() {
@@ -312,15 +308,10 @@ class SoundManager {
       utterance.rate = 0.95; // Calm, clear, clinical speed
       utterance.pitch = 1.0;
       utterance.volume = 0.9;
+      utterance.lang = 'en-US';
 
-      if (lang === 'ta' && this.selectedTamilVoice) {
-        utterance.voice = this.selectedTamilVoice;
-        utterance.lang = 'ta-IN';
-      } else if (this.selectedVoice) {
+      if (this.selectedVoice) {
         utterance.voice = this.selectedVoice;
-        utterance.lang = this.selectedVoice.lang || 'en-US';
-      } else {
-        utterance.lang = lang === 'ta' ? 'ta-IN' : 'en-US';
       }
 
       utterance.onstart = () => {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHandTracking } from '../../context/HandTrackingContext';
 import { useRehabInput } from '../../input/InputContext';
+import { useRehab } from '../../context/RehabContext';
+import { getTranslation } from '../../utils/i18n';
 import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
 import { Crosshair, Zap, Award, AlertTriangle, Sparkles, CheckCircle2, RotateCcw } from 'lucide-react';
@@ -68,6 +70,8 @@ export const WhackATargetGame: React.FC<WhackATargetGameProps> = ({
 }) => {
   const { handState } = useHandTracking();
   const { inputState } = useRehabInput();
+  const { language } = useRehab();
+  const t = getTranslation(language);
 
   const [reps, setReps] = useState(0);
   const [score, setScore] = useState(0);

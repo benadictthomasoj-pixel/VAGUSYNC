@@ -3,6 +3,7 @@ import { useHandTracking } from '../../context/HandTrackingContext';
 import { useRehabInput } from '../../input/InputContext';
 import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
+import { useRehab } from '../../context/RehabContext';
 import { Palette, CheckCircle2, Sparkles, AlertCircle } from 'lucide-react';
 
 interface ColorMatchGameProps {
@@ -37,11 +38,11 @@ interface ColorBin {
 }
 
 const COLOR_DEFS = [
-  { name: 'Red', hex: '#EF4444', emoji: '🔴' },
-  { name: 'Blue', hex: '#3B82F6', emoji: '🔵' },
-  { name: 'Green', hex: '#10B981', emoji: '🟢' },
-  { name: 'Yellow', hex: '#F59E0B', emoji: '🟡' },
-  { name: 'Purple', hex: '#8B5CF6', emoji: '🟣' },
+  { name: 'Red', nameTa: 'சிகப்பு', hex: '#EF4444', emoji: '🔴' },
+  { name: 'Blue', nameTa: 'நீலம்', hex: '#3B82F6', emoji: '🔵' },
+  { name: 'Green', nameTa: 'பச்சை', hex: '#10B981', emoji: '🟢' },
+  { name: 'Yellow', nameTa: 'மஞ்சள்', hex: '#F59E0B', emoji: '🟡' },
+  { name: 'Purple', nameTa: 'ஊதா', hex: '#8B5CF6', emoji: '🟣' },
 ];
 
 export const ColorMatchGame: React.FC<ColorMatchGameProps> = ({
@@ -53,6 +54,7 @@ export const ColorMatchGame: React.FC<ColorMatchGameProps> = ({
 }) => {
   const { handState } = useHandTracking();
   const { inputState } = useRehabInput();
+  const { language } = useRehab();
   const [reps, setReps] = useState(0);
   const [score, setScore] = useState(0);
   const [activeItem, setActiveItem] = useState<ColorItem | null>(null);
@@ -218,16 +220,18 @@ export const ColorMatchGame: React.FC<ColorMatchGameProps> = ({
   }, [handState, inputState, activeItem, bins, score, reps, streak]);
 
   return (
-    <CameraGameContainer gameTitle="Color Match">
+    <CameraGameContainer gameTitle={language === 'ta' ? 'நிறப் பொருத்தம்' : 'Color Match'}>
       <div className="relative w-full h-full pointer-events-none select-none overflow-hidden">
         {/* Top Status HUD */}
         <div className="absolute top-16 left-6 right-6 flex items-center justify-between z-20">
           <div className="bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-700 text-white flex items-center gap-3">
             <Palette className="w-5 h-5 text-pink-400" />
             <div>
-              <span className="text-xs font-bold block">Color Sorter</span>
+              <span className="text-xs font-bold block">
+                {language === 'ta' ? 'நிற வரிசையாளர்' : 'Color Sorter'}
+              </span>
               <span className="text-[10px] text-slate-400">
-                Sorted: {reps} / {targetReps}
+                {language === 'ta' ? 'வரிசைப்படுத்தியது:' : 'Sorted:'} {reps} / {targetReps}
               </span>
             </div>
           </div>
@@ -235,11 +239,11 @@ export const ColorMatchGame: React.FC<ColorMatchGameProps> = ({
           <div className="flex items-center gap-3">
             {streak > 1 && (
               <div className="bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-extrabold px-3 py-1 rounded-full animate-bounce">
-                🔥 {streak}x Streak!
+                🔥 {streak}x {language === 'ta' ? 'தொடர்!' : 'Streak!'}
               </div>
             )}
             <div className="bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-700 text-white font-mono text-sm font-bold">
-              {score} PTS
+              {score} {language === 'ta' ? 'புள்ளிகள்' : 'PTS'}
             </div>
           </div>
         </div>
@@ -282,33 +286,40 @@ export const ColorMatchGame: React.FC<ColorMatchGameProps> = ({
 
         {/* Bottom Destination Color Bins */}
         <div className="absolute inset-x-0 bottom-6 flex items-center justify-center gap-3 px-6">
-          {bins.map((bin) => (
-            <div
-              key={bin.id}
-              className={`relative flex flex-col items-center justify-center rounded-3xl border-2 transition-transform duration-200 shadow-xl ${
-                bin.bouncing ? 'scale-115 -translate-y-3' : ''
-              } ${bin.shaking ? 'animate-wiggle border-rose-500' : 'border-white/30'}`}
-              style={{
-                width: `${bin.width}px`,
-                height: '96px',
-                backgroundColor: `${bin.colorHex}30`,
-                borderColor: bin.colorHex,
-                boxShadow: `0 8px 20px ${bin.colorHex}40`,
-              }}
-            >
-              {/* Glow Rim */}
+          {bins.map((bin) => {
+            const def = COLOR_DEFS.find((d) => d.name === bin.colorName);
+            const displayName = language === 'ta' && def ? def.nameTa : bin.colorName;
+
+            return (
               <div
-                className="w-full h-3 rounded-t-2xl opacity-80"
-                style={{ backgroundColor: bin.colorHex }}
-              />
-              <div className="flex-1 flex flex-col items-center justify-center">
-                <span className="text-xs font-black text-white uppercase tracking-wider">
-                  {bin.colorName}
-                </span>
-                <span className="text-[10px] text-white/80 font-semibold">Drop Here</span>
+                key={bin.id}
+                className={`relative flex flex-col items-center justify-center rounded-3xl border-2 transition-transform duration-200 shadow-xl ${
+                  bin.bouncing ? 'scale-115 -translate-y-3' : ''
+                } ${bin.shaking ? 'animate-wiggle border-rose-500' : 'border-white/30'}`}
+                style={{
+                  width: `${bin.width}px`,
+                  height: '96px',
+                  backgroundColor: `${bin.colorHex}30`,
+                  borderColor: bin.colorHex,
+                  boxShadow: `0 8px 20px ${bin.colorHex}40`,
+                }}
+              >
+                {/* Glow Rim */}
+                <div
+                  className="w-full h-3 rounded-t-2xl opacity-80"
+                  style={{ backgroundColor: bin.colorHex }}
+                />
+                <div className="flex-1 flex flex-col items-center justify-center">
+                  <span className="text-xs font-black text-white uppercase tracking-wider">
+                    {displayName}
+                  </span>
+                  <span className="text-[10px] text-white/80 font-semibold">
+                    {language === 'ta' ? 'இங்கு போடுங்கள்' : 'Drop Here'}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </CameraGameContainer>

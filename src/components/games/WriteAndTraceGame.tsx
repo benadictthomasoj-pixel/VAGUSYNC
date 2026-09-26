@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useHandTracking } from '../../context/HandTrackingContext';
+import { useRehab } from '../../context/RehabContext';
+import { getTranslation } from '../../utils/i18n';
 import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
 import { Point } from '../../services/handTracking/types';
@@ -174,6 +176,8 @@ export const WriteAndTraceGame: React.FC<WriteAndTraceGameProps> = ({
   onExertionTick,
 }) => {
   const { handState } = useHandTracking();
+  const { language } = useRehab();
+  const t = getTranslation(language);
   const [isPaused, setIsPaused] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -472,7 +476,9 @@ export const WriteAndTraceGame: React.FC<WriteAndTraceGameProps> = ({
 
         {/* In-Game Guidance text */}
         <div className="absolute bottom-3.5 left-6 text-xs text-slate-300 bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-slate-700/80 pointer-events-none z-30">
-          Trace the virtual character with your real index finger from green to orange
+          {language === 'ta'
+            ? 'பச்சை நிற புள்ளியிலிருந்து ஆரஞ்சு புள்ளி வரை விரலால் நேர்த்தியாக வரையவும்'
+            : 'Trace the virtual character with your real index finger from green to orange'}
         </div>
       </div>
     </CameraGameContainer>

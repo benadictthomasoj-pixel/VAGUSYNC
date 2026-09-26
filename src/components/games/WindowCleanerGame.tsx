@@ -3,6 +3,7 @@ import { useHandTracking } from '../../context/HandTrackingContext';
 import { useRehabInput } from '../../input/InputContext';
 import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
+import { useRehab } from '../../context/RehabContext';
 import { Sparkles, Sun, CheckCircle2, RotateCcw } from 'lucide-react';
 
 interface WindowCleanerGameProps {
@@ -16,16 +17,19 @@ interface WindowCleanerGameProps {
 const SCENES = [
   {
     name: 'Alpine Sunrise',
+    nameTa: 'சூரிய உதயம்',
     bgGradient: 'from-amber-500 via-rose-500 to-indigo-900',
     emoji: '🏔️ ☀️ 🌲',
   },
   {
     name: 'Tropical Paradise',
+    nameTa: 'தீவு சொர்க்கம்',
     bgGradient: 'from-cyan-400 via-teal-500 to-blue-800',
     emoji: '🏝️ 🐬 🌺',
   },
   {
     name: 'Sakura Garden',
+    nameTa: 'செர்ரி தோட்டம்',
     bgGradient: 'from-pink-400 via-purple-500 to-indigo-900',
     emoji: '🌸 ⛩️ 🏯',
   },
@@ -40,6 +44,7 @@ export const WindowCleanerGame: React.FC<WindowCleanerGameProps> = ({
 }) => {
   const { handState } = useHandTracking();
   const { inputState } = useRehabInput();
+  const { language } = useRehab();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cleanliness, setCleanliness] = useState(0);
@@ -159,7 +164,7 @@ export const WindowCleanerGame: React.FC<WindowCleanerGameProps> = ({
   }, [handState, inputState, isSparklingClean, brushRadius]);
 
   return (
-    <CameraGameContainer gameTitle="Window Cleaner">
+    <CameraGameContainer gameTitle={language === 'ta' ? 'ஜன்னல் சுத்தம்' : 'Window Cleaner'}>
       <div className="relative w-full h-full pointer-events-none select-none overflow-hidden">
         {/* Hidden Scenic Artwork Layer (Underneath Fog) */}
         <div
@@ -167,7 +172,7 @@ export const WindowCleanerGame: React.FC<WindowCleanerGameProps> = ({
         >
           <span className="text-6xl sm:text-7xl mb-2 animate-bounce">{scene.emoji}</span>
           <h3 className="text-2xl font-black text-white/90 uppercase tracking-widest">
-            {scene.name}
+            {language === 'ta' ? scene.nameTa || scene.name : scene.name}
           </h3>
         </div>
 
@@ -186,15 +191,19 @@ export const WindowCleanerGame: React.FC<WindowCleanerGameProps> = ({
           <div className="bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-700 text-white flex items-center gap-3">
             <Sparkles className="w-5 h-5 text-amber-400" />
             <div>
-              <span className="text-xs font-bold block">Cleanliness</span>
+              <span className="text-xs font-bold block">
+                {language === 'ta' ? 'சுத்தம்' : 'Cleanliness'}
+              </span>
               <span className="text-[10px] text-slate-400">
-                {cleanliness}% Clean • Window {reps + 1} of {targetReps}
+                {language === 'ta'
+                  ? `${cleanliness}% சுத்தம் • ஜன்னல் ${reps + 1} / ${targetReps}`
+                  : `${cleanliness}% Clean • Window ${reps + 1} of ${targetReps}`}
               </span>
             </div>
           </div>
 
           <div className="bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-700 text-white font-mono text-sm font-bold">
-            {score} PTS
+            {score} {language === 'ta' ? 'புள்ளிகள்' : 'PTS'}
           </div>
         </div>
 
@@ -217,8 +226,12 @@ export const WindowCleanerGame: React.FC<WindowCleanerGameProps> = ({
           <div className="absolute inset-0 flex items-center justify-center z-50 bg-amber-400/20 backdrop-blur-xs animate-in zoom-in-95">
             <div className="bg-slate-900/90 border-2 border-amber-400 p-6 rounded-3xl shadow-2xl text-center space-y-2 text-white">
               <Sun className="w-12 h-12 text-amber-400 mx-auto animate-spin-slow" />
-              <h3 className="text-2xl font-black text-white">Sparkling Clean!</h3>
-              <p className="text-xs text-amber-300 font-bold">100% Window Cleared</p>
+              <h3 className="text-2xl font-black text-white">
+                {language === 'ta' ? 'மிகவும் சுத்தமாகிவிட்டது!' : 'Sparkling Clean!'}
+              </h3>
+              <p className="text-xs text-amber-300 font-bold">
+                {language === 'ta' ? '100% ஜன்னல் சுத்தம் செய்யப்பட்டது' : '100% Window Cleared'}
+              </p>
             </div>
           </div>
         )}

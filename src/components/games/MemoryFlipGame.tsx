@@ -3,6 +3,7 @@ import { useHandTracking } from '../../context/HandTrackingContext';
 import { useRehabInput } from '../../input/InputContext';
 import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
+import { useRehab } from '../../context/RehabContext';
 import { Brain, Sparkles, Eye, Trophy, RotateCcw } from 'lucide-react';
 
 interface MemoryFlipGameProps {
@@ -17,20 +18,21 @@ interface Card {
   id: number;
   symbol: string;
   name: string;
+  nameTa?: string;
   color: string;
   isFlipped: boolean;
   isMatched: boolean;
 }
 
 const SYMBOL_POOL = [
-  { symbol: '🍎', name: 'Apple', color: '#EF4444' },
-  { symbol: '⭐', name: 'Star', color: '#F59E0B' },
-  { symbol: '🌿', name: 'Leaf', color: '#10B981' },
-  { symbol: '💧', name: 'Drop', color: '#3B82F6' },
-  { symbol: '💜', name: 'Heart', color: '#8B5CF6' },
-  { symbol: '🔔', name: 'Bell', color: '#EC4899' },
-  { symbol: '⚡', name: 'Bolt', color: '#EAB308' },
-  { symbol: '🌙', name: 'Moon', color: '#06B6D4' },
+  { symbol: '🍎', name: 'Apple', nameTa: 'ஆப்பிள்', color: '#EF4444' },
+  { symbol: '⭐', name: 'Star', nameTa: 'நட்சத்திரம்', color: '#F59E0B' },
+  { symbol: '🌿', name: 'Leaf', nameTa: 'இலை', color: '#10B981' },
+  { symbol: '💧', name: 'Drop', nameTa: 'துளி', color: '#3B82F6' },
+  { symbol: '💜', name: 'Heart', nameTa: 'இதயம்', color: '#8B5CF6' },
+  { symbol: '🔔', name: 'Bell', nameTa: 'மணி', color: '#EC4899' },
+  { symbol: '⚡', name: 'Bolt', nameTa: 'மின்னல்', color: '#EAB308' },
+  { symbol: '🌙', name: 'Moon', nameTa: 'நிலா', color: '#06B6D4' },
 ];
 
 export const MemoryFlipGame: React.FC<MemoryFlipGameProps> = ({
@@ -42,6 +44,7 @@ export const MemoryFlipGame: React.FC<MemoryFlipGameProps> = ({
 }) => {
   const { handState } = useHandTracking();
   const { inputState } = useRehabInput();
+  const { language } = useRehab();
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
@@ -62,6 +65,7 @@ export const MemoryFlipGame: React.FC<MemoryFlipGameProps> = ({
         id: idx,
         symbol: item.symbol,
         name: item.name,
+        nameTa: item.nameTa,
         color: item.color,
         isFlipped: false,
         isMatched: false,
@@ -193,16 +197,20 @@ export const MemoryFlipGame: React.FC<MemoryFlipGameProps> = ({
   const rows = numPairs === 6 ? 3 : 2;
 
   return (
-    <CameraGameContainer gameTitle="Memory Flip">
+    <CameraGameContainer gameTitle={language === 'ta' ? 'நினைவாற்றல் அட்டை' : 'Memory Flip'}>
       <div className="relative w-full h-full pointer-events-none select-none overflow-hidden">
         {/* Top HUD */}
         <div className="absolute top-16 left-6 right-6 flex items-center justify-between z-20">
           <div className="bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-700 text-white flex items-center gap-3">
             <Brain className="w-5 h-5 text-indigo-400" />
             <div>
-              <span className="text-xs font-bold block">Memory Grid</span>
+              <span className="text-xs font-bold block">
+                {language === 'ta' ? 'நினைவாற்றல் கட்டம்' : 'Memory Grid'}
+              </span>
               <span className="text-[10px] text-slate-400">
-                Pairs: {matchedPairs} / {numPairs} • Moves: {moves}
+                {language === 'ta'
+                  ? `இணைகள்: ${matchedPairs} / ${numPairs} • நகர்வுகள்: ${moves}`
+                  : `Pairs: ${matchedPairs} / ${numPairs} • Moves: ${moves}`}
               </span>
             </div>
           </div>
@@ -214,12 +222,12 @@ export const MemoryFlipGame: React.FC<MemoryFlipGameProps> = ({
                 className="bg-indigo-600/90 hover:bg-indigo-500 pointer-events-auto text-white text-xs font-bold px-3.5 py-2 rounded-2xl border border-indigo-400/40 shadow-lg flex items-center gap-1.5 transition-all cursor-pointer"
               >
                 <Eye className="w-3.5 h-3.5" />
-                <span>Peek (1x)</span>
+                <span>{language === 'ta' ? 'காண் (1 முறை)' : 'Peek (1x)'}</span>
               </button>
             )}
 
             <div className="bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-700 text-white font-mono text-sm font-bold">
-              {score} PTS
+              {score} {language === 'ta' ? 'புள்ளிகள்' : 'PTS'}
             </div>
           </div>
         </div>
@@ -255,7 +263,7 @@ export const MemoryFlipGame: React.FC<MemoryFlipGameProps> = ({
                     <div className="flex flex-col items-center justify-center animate-in zoom-in-95">
                       <span className="text-3xl sm:text-4xl">{card.symbol}</span>
                       <span className="text-[10px] font-bold text-slate-700 mt-1">
-                        {card.name}
+                        {language === 'ta' ? card.nameTa || card.name : card.name}
                       </span>
                     </div>
                   ) : (

@@ -3,6 +3,7 @@ import { useHandTracking } from '../../context/HandTrackingContext';
 import { useRehabInput } from '../../input/InputContext';
 import { CameraGameContainer } from '../hand/CameraGameContainer';
 import { soundManager } from '../../utils/audio';
+import { useRehab } from '../../context/RehabContext';
 import { Boxes, CheckCircle2, RotateCcw, Sparkles } from 'lucide-react';
 
 interface BlockBuilderGameProps {
@@ -30,6 +31,7 @@ interface Block {
 const BLUEPRINTS = [
   {
     name: 'Arch Tower',
+    nameTa: 'வளைவு கோபுரம்',
     slots: [
       { type: 'rect' as const, color: '#3B82F6', width: 44, height: 70, x: 0.44, y: 0.70 },
       { type: 'rect' as const, color: '#3B82F6', width: 44, height: 70, x: 0.56, y: 0.70 },
@@ -39,6 +41,7 @@ const BLUEPRINTS = [
   },
   {
     name: 'Pyramid Castle',
+    nameTa: 'பிரமிடு கோட்டை',
     slots: [
       { type: 'cube' as const, color: '#EC4899', width: 48, height: 48, x: 0.43, y: 0.72 },
       { type: 'cube' as const, color: '#EC4899', width: 48, height: 48, x: 0.57, y: 0.72 },
@@ -48,6 +51,7 @@ const BLUEPRINTS = [
   },
   {
     name: 'Sky Beacon',
+    nameTa: 'வான விளக்கு',
     slots: [
       { type: 'rect' as const, color: '#6366F1', width: 80, height: 40, x: 0.50, y: 0.73 },
       { type: 'cylinder' as const, color: '#10B981', width: 44, height: 44, x: 0.50, y: 0.60 },
@@ -66,6 +70,7 @@ export const BlockBuilderGame: React.FC<BlockBuilderGameProps> = ({
 }) => {
   const { handState } = useHandTracking();
   const { inputState } = useRehabInput();
+  const { language } = useRehab();
   const [reps, setReps] = useState(0);
   const [score, setScore] = useState(0);
   const [currentBlueprintIdx, setCurrentBlueprintIdx] = useState(0);
@@ -204,23 +209,27 @@ export const BlockBuilderGame: React.FC<BlockBuilderGameProps> = ({
   }, [handState, inputState, grabbedBlockId, blocks]);
 
   return (
-    <CameraGameContainer gameTitle="Block Builder">
+    <CameraGameContainer gameTitle={language === 'ta' ? 'கட்டி அடுக்குதல்' : 'Block Builder'}>
       <div className="relative w-full h-full pointer-events-none select-none overflow-hidden">
         {/* Top Header Card */}
         <div className="absolute top-16 left-6 right-6 flex items-center justify-between z-20">
           <div className="bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-700 text-white flex items-center gap-3">
             <Boxes className="w-5 h-5 text-blue-400" />
             <div>
-              <span className="text-xs font-bold block">{activeBlueprint.name}</span>
+              <span className="text-xs font-bold block">
+                {language === 'ta' ? activeBlueprint.nameTa || activeBlueprint.name : activeBlueprint.name}
+              </span>
               <span className="text-[10px] text-slate-400">
-                Structure {reps + 1} of {targetReps}
+                {language === 'ta'
+                  ? `கட்டமைப்பு ${reps + 1} / ${targetReps}`
+                  : `Structure ${reps + 1} of ${targetReps}`}
               </span>
             </div>
           </div>
 
           <div className="bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-2xl border border-slate-700 text-white font-mono text-sm font-bold flex items-center gap-2">
             <span className="text-amber-400">★</span>
-            <span>{score} PTS</span>
+            <span>{score} {language === 'ta' ? 'புள்ளிகள்' : 'PTS'}</span>
           </div>
         </div>
 
@@ -237,7 +246,7 @@ export const BlockBuilderGame: React.FC<BlockBuilderGameProps> = ({
             }}
           >
             <div className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest pt-1">
-              Building Platform
+              {language === 'ta' ? 'கட்டமைப்பு தளம்' : 'Building Platform'}
             </div>
           </div>
 
@@ -300,8 +309,12 @@ export const BlockBuilderGame: React.FC<BlockBuilderGameProps> = ({
               <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                 <Sparkles className="w-6 h-6 animate-spin-slow" />
               </div>
-              <h3 className="text-xl font-extrabold text-white">Structure Complete!</h3>
-              <p className="text-xs text-emerald-300 font-semibold">+100 Points • Perfect Assembly</p>
+              <h3 className="text-xl font-extrabold text-white">
+                {language === 'ta' ? 'கட்டமைப்பு முடிந்தது!' : 'Structure Complete!'}
+              </h3>
+              <p className="text-xs text-emerald-300 font-semibold">
+                {language === 'ta' ? '+100 புள்ளிகள் • அருமையான உருவாக்கம்' : '+100 Points • Perfect Assembly'}
+              </p>
             </div>
           </div>
         )}
