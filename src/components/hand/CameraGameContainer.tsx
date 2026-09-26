@@ -4,9 +4,7 @@ import { useRehab } from '../../context/RehabContext';
 import {
   Camera,
   CameraOff,
-  Hand,
   ShieldCheck,
-  AlertTriangle,
   Heart,
   CheckCircle2,
   RefreshCw,
@@ -22,10 +20,8 @@ interface CameraGameContainerProps {
 
 export const CameraGameContainer: React.FC<CameraGameContainerProps> = ({
   children,
-  isPaused = false,
   onTrackingStateChange,
   className = '',
-  gameTitle,
 }) => {
   const {
     handState,
@@ -43,8 +39,8 @@ export const CameraGameContainer: React.FC<CameraGameContainerProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const skeletonCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  const [showDetectedToast, setShowDetectedToast] = useState(false);
-  const prevDetectedRef = useRef(false);
+  const [hasPromptedPrompt, setHasPromptedPrompt] = useState(false);
+  const debounceTimerRef = useRef<any>(null);
 
   // Attach media stream to video element for mirrored live background
   useEffect(() => {
@@ -64,21 +60,29 @@ export const CameraGameContainer: React.FC<CameraGameContainerProps> = ({
     }
   }, [stream, videoElement, trackingMode]);
 
-  // Flash subtle "Hand Detected" toast when newly found
+  // Debounced notification of tracking state changes to avoid stuttering physics/timers
   useEffect(() => {
-    if (trackingMode === 'camera') {
-      if (handState.detected && !prevDetectedRef.current) {
-        setShowDetectedToast(true);
-        const t = setTimeout(() => setShowDetectedToast(false), 1600);
-        onTrackingStateChange?.(true);
-        prevDetectedRef.current = true;
-        return () => clearTimeout(t);
-      } else if (!handState.detected && prevDetectedRef.current) {
-        onTrackingStateChange?.(false);
-        prevDetectedRef.current = false;
-      }
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
     }
-  }, [handState.detected, trackingMode, onTrackingStateChange]);
+
+    if (handState.detected) {
+      onTrackingStateChange?.(true);
+      setHasPromptedPrompt(false);
+    } else {
+      // Delay reporting lost hand to prevent fast flicker
+      debounceTimerRef.current = setTimeout(() => {
+        onTrackingStateChange?.(false);
+        setHasPromptedPrompt(true);
+      }, 1500);
+    }
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [handState.detected, onTrackingStateChange]);
 
   // Canvas loop for MediaPipe 21 Hand Landmarks & Skeleton
   useEffect(() => {
@@ -106,12 +110,6 @@ export const CameraGameContainer: React.FC<CameraGameContainerProps> = ({
         const h = canvas.height;
 
         // MediaPipe connections:
-        // Thumb: 0-1-2-3-4
-        // Index: 0-5-6-7-8
-        // Middle: 5-9-10-11-12
-        // Ring: 9-13-14-15-16
-        // Pinky: 13-17-18-19-20
-        // Palm base: 0-17, 0-5
         const bones = [
           [0, 1], [1, 2], [2, 3], [3, 4], // Thumb
           [0, 5], [5, 6], [6, 7], [7, 8], // Index
@@ -283,7 +281,7 @@ export const CameraGameContainer: React.FC<CameraGameContainerProps> = ({
                 trackingMode === 'simulation'
                   ? 'bg-indigo-400'
                   : handState.detected
-                  ? 'bg-emerald-400 animate-ping'
+                  ? 'bg-emerald-400'
                   : handState.status === 'permission-denied'
                   ? 'bg-rose-400'
                   : 'bg-sky-400 animate-pulse'
@@ -293,10 +291,10 @@ export const CameraGameContainer: React.FC<CameraGameContainerProps> = ({
               {trackingMode === 'simulation'
                 ? '● SIMULATION MODE'
                 : handState.detected
-                ? '● HAND TRACKING'
+                ? '● HAND ACTIVE'
                 : handState.status === 'permission-denied'
                 ? '⚠ CAMERA PERMISSION REQUIRED'
-                : '● CAMERA ACTIVE • Looking for hand...'}
+                : '● LOOKING FOR HAND'}
             </span>
           </div>
 
@@ -304,7 +302,7 @@ export const CameraGameContainer: React.FC<CameraGameContainerProps> = ({
           {trackingMode === 'camera' && (
             <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold bg-slate-900/85 backdrop-blur-md border border-slate-700/80 text-sky-300 shadow-md">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Processing Locally</span>
+              <span>Local Tracking</span>
             </div>
           )}
         </div>
@@ -342,7 +340,7 @@ export const CameraGameContainer: React.FC<CameraGameContainerProps> = ({
               title="Stop Camera Stream and switch to simulation fallback"
             >
               <CameraOff className="w-3.5 h-3.5 text-rose-400" />
-              <span className="hidden sm:inline">Stop Camera</span>
+              <span className="hidden sm:inline">Simulation</span>
             </button>
           ) : (
             <button
@@ -351,31 +349,23 @@ export const CameraGameContainer: React.FC<CameraGameContainerProps> = ({
               title="Enable live camera hand tracking"
             >
               <Camera className="w-3.5 h-3.5 text-blue-200" />
-              <span>Enable Camera</span>
+              <span>Camera</span>
             </button>
           )}
         </div>
       </div>
 
-      {/* 5. SUBTLE SEARCHING GUIDANCE PILL (NON-BLOCKING) */}
-      {trackingMode === 'camera' && !handState.detected && handState.status !== 'permission-denied' && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none animate-in fade-in slide-in-from-bottom-2 duration-200">
-          <div className="bg-slate-900/90 border border-sky-500/50 backdrop-blur-md px-4 py-2 rounded-full shadow-2xl flex items-center gap-2 text-sky-200 text-xs font-bold">
-            <span className="text-base animate-bounce">🖐</span>
-            <span>Show your palm to the camera to begin</span>
+      {/* 5. STABLE SEARCHING GUIDANCE PILL (ONLY SHOWN IF UNSEEN FOR EXTENDED TIME) */}
+      {trackingMode === 'camera' && !handState.detected && hasPromptedPrompt && handState.status !== 'permission-denied' && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none transition-opacity duration-300">
+          <div className="bg-slate-900/95 border border-sky-500/50 backdrop-blur-md px-4 py-2 rounded-full shadow-2xl flex items-center gap-2 text-sky-200 text-xs font-bold">
+            <span className="text-base">🖐</span>
+            <span>Raise hand facing camera to move</span>
           </div>
         </div>
       )}
 
-      {/* 6. SUBTLE "HAND DETECTED" TOAST */}
-      {showDetectedToast && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-emerald-950/90 border border-emerald-400/60 backdrop-blur-md px-4 py-1.5 rounded-full shadow-xl flex items-center gap-2 text-emerald-300 text-xs font-bold animate-in fade-in slide-in-from-top-2 duration-150 pointer-events-none">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          <span>✓ HAND DETECTED</span>
-        </div>
-      )}
-
-      {/* 7. DEDICATED PERMISSION ERROR CARD (ONLY IF CAMERA PERMISSION DENIED) */}
+      {/* 6. DEDICATED PERMISSION ERROR CARD (ONLY IF CAMERA PERMISSION DENIED) */}
       {trackingMode === 'camera' && handState.status === 'permission-denied' && (
         <div className="absolute inset-0 z-40 bg-slate-950/85 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-slate-900 text-white rounded-3xl p-7 max-w-sm w-full border-2 border-rose-500/70 shadow-2xl text-center space-y-4 animate-in zoom-in-95 duration-150">
@@ -408,7 +398,7 @@ export const CameraGameContainer: React.FC<CameraGameContainerProps> = ({
         </div>
       )}
 
-      {/* 8. CARDIAC SAFETY PAUSE FREEZE */}
+      {/* 7. CARDIAC SAFETY PAUSE FREEZE */}
       {safetyState === 'SAFETY_EVENT' && (
         <div className="absolute inset-0 z-40 bg-rose-950/80 backdrop-blur-xs flex items-center justify-center p-4 pointer-events-auto">
           <div className="bg-slate-900 text-white rounded-3xl p-7 max-w-md w-full border-2 border-rose-500 shadow-2xl text-center space-y-4 animate-in zoom-in-95 duration-150">

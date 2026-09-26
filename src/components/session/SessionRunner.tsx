@@ -11,6 +11,15 @@ import { PathTracerGame } from '../games/PathTracerGame';
 import { ShapeMatchGame } from '../games/ShapeMatchGame';
 import { BilateralPuzzleGame } from '../games/BilateralPuzzleGame';
 import { WriteAndTraceGame } from '../games/WriteAndTraceGame';
+import { BlockBuilderGame } from '../games/BlockBuilderGame';
+import { ColorMatchGame } from '../games/ColorMatchGame';
+import { MemoryFlipGame } from '../games/MemoryFlipGame';
+import { GroceryShoppingGame } from '../games/GroceryShoppingGame';
+import { CupTransferGame } from '../games/CupTransferGame';
+import { WindowCleanerGame } from '../games/WindowCleanerGame';
+import { ShelfOrganiserGame } from '../games/ShelfOrganiserGame';
+import { WhackATargetGame } from '../games/WhackATargetGame';
+import { NeuroPianoGame } from '../games/NeuroPianoGame';
 import { HandCalibrationModal } from '../hand/HandCalibrationModal';
 import { DeviceCalibrationModal } from '../common/DeviceCalibrationModal';
 import { useHardware } from '../../hardware/HardwareContext';
@@ -529,6 +538,96 @@ export const SessionRunner: React.FC<SessionRunnerProps> = ({
 
           {gameDef.id === 'write-and-trace' && (
             <WriteAndTraceGame
+              difficulty={liveDifficulty}
+              targetReps={targetReps}
+              onRepComplete={handleRepComplete}
+              onGameComplete={handleGameComplete}
+              onExertionTick={handleExertionTick}
+            />
+          )}
+
+          {gameDef.id === 'block-builder' && (
+            <BlockBuilderGame
+              difficulty={liveDifficulty}
+              targetReps={targetReps}
+              onRepComplete={handleRepComplete}
+              onGameComplete={handleGameComplete}
+              onExertionTick={handleExertionTick}
+            />
+          )}
+
+          {gameDef.id === 'color-match' && (
+            <ColorMatchGame
+              difficulty={liveDifficulty}
+              targetReps={targetReps}
+              onRepComplete={handleRepComplete}
+              onGameComplete={handleGameComplete}
+              onExertionTick={handleExertionTick}
+            />
+          )}
+
+          {gameDef.id === 'memory-flip' && (
+            <MemoryFlipGame
+              difficulty={liveDifficulty}
+              targetReps={targetReps}
+              onRepComplete={handleRepComplete}
+              onGameComplete={handleGameComplete}
+              onExertionTick={handleExertionTick}
+            />
+          )}
+
+          {gameDef.id === 'grocery-shopping' && (
+            <GroceryShoppingGame
+              difficulty={liveDifficulty}
+              targetReps={targetReps}
+              onRepComplete={handleRepComplete}
+              onGameComplete={handleGameComplete}
+              onExertionTick={handleExertionTick}
+            />
+          )}
+
+          {gameDef.id === 'cup-transfer' && (
+            <CupTransferGame
+              difficulty={liveDifficulty}
+              targetReps={targetReps}
+              onRepComplete={handleRepComplete}
+              onGameComplete={handleGameComplete}
+              onExertionTick={handleExertionTick}
+            />
+          )}
+
+          {gameDef.id === 'window-cleaner' && (
+            <WindowCleanerGame
+              difficulty={liveDifficulty}
+              targetReps={targetReps}
+              onRepComplete={handleRepComplete}
+              onGameComplete={handleGameComplete}
+              onExertionTick={handleExertionTick}
+            />
+          )}
+
+          {gameDef.id === 'shelf-organiser' && (
+            <ShelfOrganiserGame
+              difficulty={liveDifficulty}
+              targetReps={targetReps}
+              onRepComplete={handleRepComplete}
+              onGameComplete={handleGameComplete}
+              onExertionTick={handleExertionTick}
+            />
+          )}
+
+          {gameDef.id === 'whack-a-target' && (
+            <WhackATargetGame
+              difficulty={liveDifficulty}
+              targetReps={targetReps}
+              onRepComplete={handleRepComplete}
+              onGameComplete={handleGameComplete}
+              onExertionTick={handleExertionTick}
+            />
+          )}
+
+          {gameDef.id === 'neuro-piano' && (
+            <NeuroPianoGame
               difficulty={liveDifficulty}
               targetReps={targetReps}
               onRepComplete={handleRepComplete}

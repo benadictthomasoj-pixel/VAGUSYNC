@@ -119,7 +119,7 @@ export const FruitCatchGame: React.FC<FruitCatchGameProps> = ({
 
                 setCatchParticles((p) => [
                   ...p,
-                  { id: Date.now(), x: item.x, y: basketY - 0.04, text: '+80 🍎' },
+                  { id: Date.now() + Math.random(), x: item.x, y: basketY - 0.04, text: '+80 🍎' },
                 ]);
 
                 const accuracy = Math.round((newReps / (newReps + misses)) * 100);

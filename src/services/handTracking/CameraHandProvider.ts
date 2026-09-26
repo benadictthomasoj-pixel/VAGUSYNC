@@ -325,24 +325,25 @@ export class CameraHandProvider implements IHandInputProvider {
       const elapsedSinceSeen = now - this.lastSeenHandTime;
       this.stableFramesCount = Math.max(0, this.stableFramesCount - 1);
 
-      if (this.lastSeenHandTime > 0 && elapsedSinceSeen < 500) {
-        // 0 - 500 ms: Grace period, retain last known tracking state smoothly
+      if (this.lastSeenHandTime > 0 && elapsedSinceSeen < 1200) {
+        // 0 - 1200 ms: Stable grace period, retain last known tracking state smoothly
         this.status = 'tracking';
         this.currentState = {
           ...this.currentState,
           status: 'tracking',
           timestamp: now,
         };
-      } else if (this.lastSeenHandTime > 0 && elapsedSinceSeen < 1500) {
-        // 500 - 1500 ms: Hand temporarily lost, searching actively
+      } else if (this.lastSeenHandTime > 0 && elapsedSinceSeen < 2500) {
+        // 1200 - 2500 ms: Hand temporarily lost, searching actively without abruptly resetting
         this.status = 'tracking-lost';
         this.currentState = {
           ...this.currentState,
+          detected: false,
           status: 'tracking-lost',
           timestamp: now,
         };
       } else {
-        // > 1500 ms: Active continuous searching for palm
+        // > 2500 ms: Active continuous searching for palm
         this.status = 'searching';
         this.currentState = {
           ...this.currentState,

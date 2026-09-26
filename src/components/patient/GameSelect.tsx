@@ -9,6 +9,15 @@ import {
   Activity,
   Boxes,
   Layers,
+  PenTool,
+  Palette,
+  Brain,
+  ShoppingCart,
+  GlassWater,
+  Sun,
+  Library,
+  Crosshair,
+  Music,
   Clock,
   Zap,
   ArrowRight,
@@ -54,6 +63,24 @@ export const GameSelect: React.FC<GameSelectProps> = ({ onSelectGame }) => {
         return <Boxes className="w-6 h-6" style={{ color }} />;
       case 'Layers':
         return <Layers className="w-6 h-6" style={{ color }} />;
+      case 'PenTool':
+        return <PenTool className="w-6 h-6" style={{ color }} />;
+      case 'Palette':
+        return <Palette className="w-6 h-6" style={{ color }} />;
+      case 'Brain':
+        return <Brain className="w-6 h-6" style={{ color }} />;
+      case 'ShoppingCart':
+        return <ShoppingCart className="w-6 h-6" style={{ color }} />;
+      case 'GlassWater':
+        return <GlassWater className="w-6 h-6" style={{ color }} />;
+      case 'Sun':
+        return <Sun className="w-6 h-6" style={{ color }} />;
+      case 'Library':
+        return <Library className="w-6 h-6" style={{ color }} />;
+      case 'Crosshair':
+        return <Crosshair className="w-6 h-6" style={{ color }} />;
+      case 'Music':
+        return <Music className="w-6 h-6" style={{ color }} />;
       default:
         return <Play className="w-6 h-6" style={{ color }} />;
     }

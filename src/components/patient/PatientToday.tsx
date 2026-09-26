@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRehab } from '../../context/RehabContext';
+import { useHardware } from '../../hardware/HardwareContext';
 import { getTranslation } from '../../utils/i18n';
 import {
   Activity,
@@ -13,9 +14,10 @@ import {
   ShieldCheck,
   ChevronRight,
   Target,
+  Cpu,
+  Wifi,
   Hand,
-  Award,
-  Calendar,
+  Compass,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -32,7 +34,8 @@ interface PatientTodayProps {
 }
 
 export const PatientToday: React.FC<PatientTodayProps> = ({ onStartSession, onNavigate }) => {
-  const { activePatient, activeProgram, sessions, language, simulatedHR, safetyState } = useRehab();
+  const { activePatient, activeProgram, sessions, language, simulatedHR, safetyState, setShowDeviceStatusModal } = useRehab();
+  const { hardwareState } = useHardware();
   const t = getTranslation(language);
 
   // Filter sessions for active patient
@@ -74,6 +77,60 @@ export const PatientToday: React.FC<PatientTodayProps> = ({ onStartSession, onNa
             <div className="text-xs font-semibold text-blue-200 uppercase tracking-wider">Experience</div>
             <div className="text-sm font-bold text-white font-mono">{activePatient.xp} XP</div>
           </div>
+        </div>
+      </div>
+
+      {/* Prominent Hardware & Wearable Device Connection Status Banner */}
+      <div className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-start sm:items-center gap-3.5">
+          <div className="w-12 h-12 rounded-2xl bg-slate-900 text-blue-400 flex items-center justify-center shadow-md shrink-0">
+            <Cpu className="w-6 h-6" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-sm font-extrabold text-slate-900">
+                Wearable Hardware Connection
+              </span>
+              <span
+                className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold border flex items-center gap-1.5 ${
+                  hardwareState.connected
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                    : 'bg-slate-100 text-slate-600 border-slate-300'
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    hardwareState.connected ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'
+                  }`}
+                />
+                {hardwareState.connected
+                  ? hardwareState.isSimulated
+                    ? 'Hardware Simulator Active'
+                    : 'ESP-12E Wi-Fi Connected'
+                  : 'Device Disconnected'}
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              3× MPU6050 IMUs (Torso, Arm, Forearm) • MAX30102 PPG • Push Button Grip
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 sm:self-center">
+          <button
+            onClick={() => onNavigate('device')}
+            className="px-4 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-800 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            <Compass className="w-4 h-4 text-blue-600" />
+            <span>Open Device Hub</span>
+          </button>
+          <button
+            onClick={() => setShowDeviceStatusModal(true)}
+            className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+          >
+            <Wifi className="w-4 h-4 text-blue-400" />
+            <span>Quick Connect</span>
+          </button>
         </div>
       </div>
 
@@ -126,7 +183,7 @@ export const PatientToday: React.FC<PatientTodayProps> = ({ onStartSession, onNa
             </p>
           </div>
           <div className="text-[10px] text-slate-400 font-medium pt-1 border-t border-slate-100">
-            Simulated sensor
+            Real-time PPG
           </div>
         </div>
 
@@ -291,7 +348,7 @@ export const PatientToday: React.FC<PatientTodayProps> = ({ onStartSession, onNa
           <div>
             <h3 className="text-base font-bold text-slate-900">{t.yourProgress}</h3>
             <p className="text-xs text-slate-500">
-              Movement Quality, Cardiac Exertion & Grip Performance across recent sessions (Demo Data)
+              Movement Quality, Cardiac Exertion & Grip Performance across recent sessions
             </p>
           </div>
           <button

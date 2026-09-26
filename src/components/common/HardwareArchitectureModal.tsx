@@ -53,8 +53,8 @@ export const HardwareArchitectureModal: React.FC = () => {
           <div className="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 flex items-start gap-3">
             <Info className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <div className="text-xs text-amber-900 leading-relaxed">
-              <span className="font-bold">Hackathon Prototype Clarification: </span>
-              This web application implements the complete software and clinical supervision layer. The embedded sensors, ESP32 BLE pipeline, and transcutaneous vagal stimulation electrodes described below represent the target hardware design.
+              <span className="font-bold">System Architecture Note: </span>
+              This web application implements the complete software and clinical supervision layer. The embedded sensors, ESP32/ESP8266 BLE/Wi-Fi pipeline, and transcutaneous vagal stimulation electrodes described below represent the target hardware design.
             </div>
           </div>
 

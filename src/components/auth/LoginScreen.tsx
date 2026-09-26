@@ -1,37 +1,34 @@
 import React, { useState } from 'react';
 import { useRehab } from '../../context/RehabContext';
 import { UserRole } from '../../types';
-import {
-  Activity,
-  User,
-  Stethoscope,
-  HeartHandshake,
-  ArrowRight,
-  ShieldCheck,
-  Sparkles,
-  Info,
-  CheckCircle,
-} from 'lucide-react';
 
 interface LoginScreenProps {
   onLoginComplete: () => void;
 }
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginComplete }) => {
-  const { setRole, activePatient, setActivePatientId, patients } = useRehab();
+  const { setRole, setActivePatientId, patients } = useRehab();
   const [selectedRole, setSelectedRole] = useState<UserRole>('patient');
-  const [patientName, setPatientName] = useState('Meera');
-  const [therapistName, setTherapistName] = useState('Dr. Priya');
-  const [caregiverName, setCaregiverName] = useState('Lakshmi');
+  const [name, setName] = useState('Meera Krishnan');
 
   const handleRoleSelect = (role: UserRole) => {
     setSelectedRole(role);
+    if (role === 'patient') {
+      setName('Meera Krishnan');
+    } else if (role === 'therapist') {
+      setName('Dr. Priya');
+    } else if (role === 'caregiver') {
+      setName('Lakshmi');
+    }
   };
 
-  const handleEnterDemo = () => {
+  const handleContinue = (e: React.FormEvent) => {
+    e.preventDefault();
     setRole(selectedRole);
     if (selectedRole === 'patient') {
-      const match = patients.find((p) => p.name.toLowerCase() === patientName.toLowerCase());
+      const match = patients.find(
+        (p) => p.name.toLowerCase() === name.toLowerCase() || name.toLowerCase().includes(p.name.toLowerCase())
+      );
       if (match) {
         setActivePatientId(match.id);
       } else {
@@ -42,176 +39,128 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginComplete }) => 
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-slate-100 to-slate-200 flex flex-col justify-between p-4 sm:p-6 lg:p-8 font-sans">
-      {/* Top Bar */}
-      <div className="max-w-6xl w-full mx-auto flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/30">
-            <Activity className="w-6 h-6 animate-pulse" />
-          </div>
-          <div>
-            <span className="text-xl font-extrabold tracking-tight text-slate-900">VagusSync</span>
-            <span className="block text-[11px] font-medium text-slate-500">Digital Health System</span>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 bg-amber-50 border border-amber-200/80 px-3 py-1.5 rounded-full text-xs font-semibold text-amber-800">
-          <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
-          <span>HACKATHON DEMO PROTOTYPE</span>
-        </div>
+    <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-6 font-sans relative overflow-hidden bg-[#0A0D14]">
+      {/* Dynamic Ambient Background Glows matching reference */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Top-Left Burgundy / Wine Glow */}
+        <div className="absolute -top-[20%] -left-[15%] w-[65vw] h-[65vw] max-w-[800px] max-h-[800px] rounded-full bg-gradient-to-br from-[#670B34] via-[#3B071E] to-transparent opacity-85 blur-[120px]" />
+        
+        {/* Top-Right Deep Navy / Indigo Glow */}
+        <div className="absolute -top-[15%] -right-[15%] w-[65vw] h-[65vw] max-w-[800px] max-h-[800px] rounded-full bg-gradient-to-bl from-[#0C2D64] via-[#081B3E] to-transparent opacity-80 blur-[130px]" />
+        
+        {/* Bottom Subtle Dark Teal / Slate Glow */}
+        <div className="absolute -bottom-[20%] left-[20%] w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full bg-gradient-to-t from-[#061A24] via-[#051118] to-transparent opacity-60 blur-[140px]" />
       </div>
 
-      {/* Main Login Card */}
-      <div className="max-w-4xl w-full mx-auto my-auto py-8">
-        <div className="text-center space-y-3 mb-8">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200/60">
-            <Sparkles className="w-3.5 h-3.5" />
-            Interactive Clinical & Patient Experience
+      {/* Main Centered Login Card */}
+      <div className="relative z-10 w-full max-w-[440px] bg-[#E8EDF2] rounded-[32px] shadow-2xl p-7 sm:p-9 border border-white/60 text-center animate-in fade-in zoom-in-95 duration-300">
+        <form onSubmit={handleContinue} className="flex flex-col items-center">
+          {/* App Squircle Icon with Heart + ECG pulse */}
+          <div className="w-16 h-16 rounded-[22px] bg-gradient-to-tr from-[#E62872] via-[#AC28A6] to-[#4F46E5] flex items-center justify-center text-white shadow-lg shadow-pink-500/25 mb-5 transition-transform hover:scale-105 duration-200">
+            <svg
+              className="w-9 h-9"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {/* Clean Heart Contour with ECG Pulse Line cut/overlay */}
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                stroke="white"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+              <path
+                d="M3.5 11.5h4.2l1.8-3.2 2.8 7 2.2-4.8 1.5 2h4.5"
+                stroke="white"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900">
+
+          {/* App Title & Subtitle */}
+          <h1 className="text-[26px] font-extrabold tracking-tight text-[#161C2D] mb-1.5 font-sans">
             VagusSync
           </h1>
-          <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto font-normal">
-            “Cardiac-safe, movement-paired stroke rehabilitation at home.”
+          <p className="text-[13px] text-[#64748B] font-normal leading-relaxed max-w-[300px] mb-6">
+            Cardiac-safe, movement-paired stroke rehabilitation at home.
           </p>
-        </div>
 
-        {/* Role Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          {/* Patient Card */}
-          <div
-            onClick={() => handleRoleSelect('patient')}
-            className={`cursor-pointer rounded-3xl p-6 border-2 transition-all text-left relative overflow-hidden bg-white shadow-xs ${
-              selectedRole === 'patient'
-                ? 'border-blue-600 ring-4 ring-blue-500/15 shadow-xl -translate-y-1'
-                : 'border-slate-200 hover:border-slate-300 hover:shadow-md'
-            }`}
-          >
-            {selectedRole === 'patient' && (
-              <div className="absolute top-4 right-4 text-blue-600">
-                <CheckCircle className="w-5 h-5 fill-blue-600 text-white" />
-              </div>
-            )}
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 mb-4">
-              <User className="w-6 h-6" />
-            </div>
-            <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
-              PATIENT
-            </div>
-            <h3 className="text-base font-bold text-slate-900 mb-1">
-              Rehabilitation Portal
-            </h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Complete guided rehabilitation, interactive games, and track cardiac-safe recovery.
-            </p>
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
-              <span>Demo Persona:</span>
-              <span className="font-semibold text-slate-900">Meera (58y)</span>
-            </div>
+          {/* Segmented Role Selector Control */}
+          <div className="w-full bg-[#D8E0E8] p-1 rounded-2xl flex items-center gap-1 mb-5">
+            <button
+              type="button"
+              onClick={() => handleRoleSelect('patient')}
+              className={`flex-1 py-2 rounded-xl text-[13px] font-semibold transition-all cursor-pointer ${
+                selectedRole === 'patient'
+                  ? 'bg-white text-[#161C2D] shadow-xs'
+                  : 'text-[#5C6E82] hover:text-[#161C2D]'
+              }`}
+            >
+              Patient
+            </button>
+            <button
+              type="button"
+              onClick={() => handleRoleSelect('therapist')}
+              className={`flex-1 py-2 rounded-xl text-[13px] font-semibold transition-all cursor-pointer ${
+                selectedRole === 'therapist'
+                  ? 'bg-white text-[#161C2D] shadow-xs'
+                  : 'text-[#5C6E82] hover:text-[#161C2D]'
+              }`}
+            >
+              Therapist
+            </button>
+            <button
+              type="button"
+              onClick={() => handleRoleSelect('caregiver')}
+              className={`flex-1 py-2 rounded-xl text-[13px] font-semibold transition-all cursor-pointer ${
+                selectedRole === 'caregiver'
+                  ? 'bg-white text-[#161C2D] shadow-xs'
+                  : 'text-[#5C6E82] hover:text-[#161C2D]'
+              }`}
+            >
+              Caregiver
+            </button>
           </div>
 
-          {/* Therapist Card */}
-          <div
-            onClick={() => handleRoleSelect('therapist')}
-            className={`cursor-pointer rounded-3xl p-6 border-2 transition-all text-left relative overflow-hidden bg-white shadow-xs ${
-              selectedRole === 'therapist'
-                ? 'border-indigo-600 ring-4 ring-indigo-500/15 shadow-xl -translate-y-1'
-                : 'border-slate-200 hover:border-slate-300 hover:shadow-md'
-            }`}
-          >
-            {selectedRole === 'therapist' && (
-              <div className="absolute top-4 right-4 text-indigo-600">
-                <CheckCircle className="w-5 h-5 fill-indigo-600 text-white" />
-              </div>
-            )}
-            <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 mb-4">
-              <Stethoscope className="w-6 h-6" />
-            </div>
-            <div className="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-1">
-              THERAPIST
-            </div>
-            <h3 className="text-base font-bold text-slate-900 mb-1">
-              Clinical Dashboard
-            </h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Monitor patient cohort, approve adaptive difficulty, set thresholds, and write clinical notes.
-            </p>
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
-              <span>Demo Clinician:</span>
-              <span className="font-semibold text-slate-900">Dr. Priya</span>
-            </div>
+          {/* Name Input Field */}
+          <div className="w-full text-left space-y-1.5 mb-5">
+            <label className="block text-[13px] font-medium text-[#5F6F82]">
+              Your name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={
+                selectedRole === 'patient'
+                  ? 'e.g. Meera Krishnan'
+                  : selectedRole === 'therapist'
+                  ? 'e.g. Dr. Priya'
+                  : 'e.g. Lakshmi'
+              }
+              className="w-full px-4 py-3 rounded-2xl bg-white border border-[#CDD6E0] text-sm text-[#161C2D] placeholder-[#9BA7B6] focus:outline-hidden focus:ring-2 focus:ring-[#0066EE] focus:border-transparent transition-all shadow-2xs font-medium"
+              required
+            />
           </div>
 
-          {/* Caregiver Card */}
-          <div
-            onClick={() => handleRoleSelect('caregiver')}
-            className={`cursor-pointer rounded-3xl p-6 border-2 transition-all text-left relative overflow-hidden bg-white shadow-xs ${
-              selectedRole === 'caregiver'
-                ? 'border-emerald-600 ring-4 ring-emerald-500/15 shadow-xl -translate-y-1'
-                : 'border-slate-200 hover:border-slate-300 hover:shadow-md'
-            }`}
-          >
-            {selectedRole === 'caregiver' && (
-              <div className="absolute top-4 right-4 text-emerald-600">
-                <CheckCircle className="w-5 h-5 fill-emerald-600 text-white" />
-              </div>
-            )}
-            <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 mb-4">
-              <HeartHandshake className="w-6 h-6" />
-            </div>
-            <div className="text-xs font-bold uppercase tracking-wider text-emerald-600 mb-1">
-              CAREGIVER
-            </div>
-            <h3 className="text-base font-bold text-slate-900 mb-1">
-              Safety & Status Hub
-            </h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Stay informed about patient safety events, completed sessions, and rapid check-in calls.
-            </p>
-            <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
-              <span>Demo Caregiver:</span>
-              <span className="font-semibold text-slate-900">Lakshmi</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Action Panel */}
-        <div className="bg-white/90 backdrop-blur-md rounded-3xl p-6 border border-slate-200/90 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="space-y-1 text-center sm:text-left">
-            <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Selected Demo Profile
-            </div>
-            <div className="text-base font-bold text-slate-900 flex items-center justify-center sm:justify-start gap-2">
-              <span>
-                {selectedRole === 'patient' && `Patient: ${patientName}`}
-                {selectedRole === 'therapist' && `Therapist: ${therapistName}`}
-                {selectedRole === 'caregiver' && `Caregiver: ${caregiverName}`}
-              </span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">
-                Prototype Demo User
-              </span>
-            </div>
-          </div>
-
+          {/* Continue Button */}
           <button
-            onClick={handleEnterDemo}
-            className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white font-bold text-sm hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 group cursor-pointer"
+            type="submit"
+            className="w-full py-3.5 rounded-2xl bg-[#0066EE] hover:bg-[#0055D0] active:scale-[0.99] text-white font-bold text-sm sm:text-base transition-all shadow-md shadow-blue-600/25 cursor-pointer flex items-center justify-center mb-4"
           >
-            <span>Enter Demo Portal</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            Continue
           </button>
-        </div>
-      </div>
 
-      {/* Footer Disclaimer */}
-      <div className="max-w-4xl w-full mx-auto text-center text-xs text-slate-500 space-y-1 pt-4 border-t border-slate-200">
-        <p className="flex items-center justify-center gap-1.5 font-medium">
-          <ShieldCheck className="w-4 h-4 text-slate-400" />
-          <span>VagusSync Hackathon Prototype — Sensor readings & physiological responses are simulated.</span>
-        </p>
-        <p className="text-[11px] text-slate-400">
-          Not intended for actual medical diagnosis or direct clinical treatment.
-        </p>
+          {/* Demo Mode Subtext */}
+          <p className="text-[12px] text-[#7E8E9F] font-medium">
+            Demo mode — no real account needed
+          </p>
+        </form>
       </div>
     </div>
   );

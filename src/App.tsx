@@ -16,7 +16,6 @@ import { CaregiverPortal } from './components/caregiver/CaregiverPortal';
 const MainLayout: React.FC = () => {
   const { role } = useRehab();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    // Check if user previously logged in
     const sessionFlag = sessionStorage.getItem('vagussync_session_auth');
     return sessionFlag === 'true';
   });
@@ -47,7 +46,7 @@ const MainLayout: React.FC = () => {
         {role === 'caregiver' && <CaregiverPortal />}
       </main>
 
-      {/* Floating Demo Hardware Simulation Bar for Hackathon Judges */}
+      {/* Floating Hardware Simulation Bar */}
       <HardwareSimulatorBar />
 
       {/* Modals */}
@@ -61,10 +60,6 @@ const MainLayout: React.FC = () => {
           <span>•</span>
           <span>Cardiac-Safe Stroke Rehabilitation Platform</span>
           <span>•</span>
-          <span className="px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-bold">
-            Hackathon Demonstration Prototype
-          </span>
-          <span>•</span>
           <button
             onClick={handleLogout}
             className="text-xs text-blue-600 hover:text-blue-800 font-semibold underline cursor-pointer"
@@ -72,9 +67,6 @@ const MainLayout: React.FC = () => {
             Switch Role / Log Out
           </button>
         </div>
-        <p className="text-[11px] text-slate-400">
-          All physiological sensor data and compensation triggers are simulated for demonstration integrity.
-        </p>
       </footer>
     </div>
   );
@@ -95,4 +87,3 @@ export function App() {
 }
 
 export default App;
-

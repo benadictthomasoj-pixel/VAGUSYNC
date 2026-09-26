@@ -5,6 +5,7 @@ import { GameSelect } from './GameSelect';
 import { PatientProgress } from './PatientProgress';
 import { PatientProfile } from './PatientProfile';
 import { OnboardingFlow } from './OnboardingFlow';
+import { DeviceHubSection } from '../common/DeviceHubSection';
 import { SessionRunner } from '../session/SessionRunner';
 import { getTranslation } from '../../utils/i18n';
 import {
@@ -13,6 +14,7 @@ import {
   Gamepad2,
   TrendingUp,
   User,
+  Cpu,
 } from 'lucide-react';
 
 export const PatientPortal: React.FC = () => {
@@ -59,7 +61,7 @@ export const PatientPortal: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Patient Sub-Navigation Tabs */}
-      <nav aria-label="Patient portal navigation" className="bg-white/80 backdrop-blur-md rounded-2xl p-1.5 border border-slate-200/90 shadow-xs max-w-2xl mx-auto flex items-center justify-between gap-1 overflow-x-auto">
+      <nav aria-label="Patient portal navigation" className="bg-white/80 backdrop-blur-md rounded-2xl p-1.5 border border-slate-200/90 shadow-xs max-w-3xl mx-auto flex items-center justify-between gap-1 overflow-x-auto">
         <button
           onClick={() => setActivePage('today')}
           className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
@@ -93,6 +95,18 @@ export const PatientPortal: React.FC = () => {
         >
           <Gamepad2 className="w-4 h-4" />
           <span>{t.navGames}</span>
+        </button>
+
+        <button
+          onClick={() => setActivePage('device')}
+          className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+            activePage === 'device'
+              ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+          }`}
+        >
+          <Cpu className="w-4 h-4" />
+          <span>Device Hub</span>
         </button>
 
         <button
@@ -139,6 +153,8 @@ export const PatientPortal: React.FC = () => {
           }}
         />
       )}
+
+      {activePage === 'device' && <DeviceHubSection />}
 
       {activePage === 'progress' && <PatientProgress />}
 

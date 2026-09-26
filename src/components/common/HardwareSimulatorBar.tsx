@@ -4,16 +4,9 @@ import { simulationHardware } from '../../hardware/SimulationHardware';
 import {
   Sliders,
   Heart,
-  AlertTriangle,
-  Flame,
   Activity,
-  ShieldAlert,
-  RotateCcw,
   ChevronUp,
   ChevronDown,
-  Radio,
-  UserX,
-  X,
 } from 'lucide-react';
 
 export const HardwareSimulatorBar: React.FC = () => {
@@ -36,14 +29,14 @@ export const HardwareSimulatorBar: React.FC = () => {
         <button
           onClick={() => setIsOpen(true)}
           className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-slate-900/95 hover:bg-slate-800 text-white border border-slate-700/90 shadow-2xl backdrop-blur-md text-xs font-bold transition-all cursor-pointer hover:scale-105 group"
-          title="Open Developer / Jury Simulator Controls"
+          title="Open Hardware Simulator Controls"
         >
           <span className="flex h-2 w-2 relative">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
           </span>
           <Sliders className="w-3.5 h-3.5 text-blue-400" />
-          <span className="text-slate-300 group-hover:text-white">Jury Controls</span>
+          <span className="text-slate-300 group-hover:text-white">Hardware Sim</span>
           <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
         </button>
       ) : (
@@ -54,7 +47,7 @@ export const HardwareSimulatorBar: React.FC = () => {
             <div className="flex items-center gap-2">
               <Sliders className="w-4 h-4 text-blue-400" />
               <span className="text-xs font-extrabold tracking-wider uppercase text-slate-200">
-                Developer / Jury Controls
+                Hardware Telemetry Simulator
               </span>
             </div>
 
@@ -124,7 +117,7 @@ export const HardwareSimulatorBar: React.FC = () => {
                   <Activity className="w-3.5 h-3.5 text-blue-400" />
                   Movement Compensations
                 </span>
-                <span className="text-[10px] text-slate-400">Demo IMU</span>
+                <span className="text-[10px] text-slate-400">IMU Simulator</span>
               </div>
 
               <div className="grid grid-cols-4 gap-1.5">
@@ -164,10 +157,6 @@ export const HardwareSimulatorBar: React.FC = () => {
                 </button>
               </div>
             </div>
-
-            <p className="text-[10px] text-slate-400 text-center italic">
-              Hardware readings simulated for hackathon demonstration.
-            </p>
           </div>
         </div>
       )}
